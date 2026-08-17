@@ -1,0 +1,243 @@
+{
+  "site": {
+    "title": "Nagham Kheir — Content Creator",
+    "description": "Portfolio of Nagham Kheir — content creator specializing in content creation, UGC, product reviews, storytelling, and photography.",
+    "brand": "nagham",
+    "brandAccent": "kheir"
+  },
+  "cv": {
+    "file": "",
+    "label": "Download CV"
+  },
+  "nav": {
+    "cta": "Let's Talk",
+    "links": [
+      {
+        "label": "About",
+        "href": "#about"
+      },
+      {
+        "label": "Services",
+        "href": "#services"
+      },
+      {
+        "label": "Work",
+        "href": "#work"
+      },
+      {
+        "label": "Photography",
+        "href": "#photography"
+      },
+      {
+        "label": "Testimonials",
+        "href": "#testimonials"
+      }
+    ]
+  },
+  "hero": {
+    "chip": "Content Creator",
+    "headline1": "NAGHAM",
+    "headline2": "KHEIR",
+    "sub": "I take content from that very first idea all the way to the final cut — <strong>from A to Z</strong>.",
+    "ctaLabel": "Work with me",
+    "photo": "assets/img/13404b85447d6bd60006e7a9c69101bc.jpg",
+    "photoAlt": "Nagham Kheir",
+    "mailDisplay": "nagham.jkheir@gmail.com"
+  },
+  "ticker": [
+    "CONTENT CREATION",
+    "UGC",
+    "PRODUCT REVIEWS",
+    "STORYTELLING",
+    "PHOTOGRAPHY"
+  ],
+  "about": {
+    "big": "About",
+    "outline": "ME",
+    "photo": "assets/img/about-cutout.webp",
+    "label": "About me",
+    "paragraphs": [
+      "I'm a content creator who loves being involved in the <strong>whole creative process</strong>, from that very first idea and script to filming, production, editing, and everything in between. I started my creative journey by studying <strong>Graphic Design</strong>, then expanded my world into <strong>videography</strong>, <strong>video editing</strong>, and <strong>content creation</strong>.",
+      "I'm pursuing content creation because I love turning simple ideas into stories that feel authentic, fun, and genuinely human. And when you work with me, <strong>you don't have to worry</strong> about the little details."
+    ],
+    "badges": [
+      {
+        "num": "A→Z",
+        "label": "I handle the whole process"
+      },
+      {
+        "num": "EN + AR",
+        "label": "Fluent in English & Arabic"
+      }
+    ]
+  },
+  "niche": {
+    "label": "Content style & niche",
+    "desc": "Creating relatable, engaging content that feels authentic and personal — from everyday moments and experiences to brands and products.",
+    "photos": [
+      {
+        "src": "assets/img/425aef944120c990a30cec82ec092439.jpg",
+        "caption": "UGC"
+      },
+      {
+        "src": "assets/img/dac3fb3e6e6c42426916ced98ef0965b.jpg",
+        "caption": "UGC"
+      },
+      {
+        "src": "assets/img/9895b841db078b9a15907faa32b00d15.jpg",
+        "caption": "Storytelling"
+      },
+      {
+        "src": "assets/img/c6aabd8687ebf6f4cccf0559794ec9b5.jpg",
+        "caption": "Storytelling"
+      }
+    ]
+  },
+  "services": {
+    "title": "UGC Video Creation",
+    "em": "offered",
+    "items": [
+      {
+        "num": "02",
+        "title": "Product Reviews",
+        "desc": "Creating visually appealing, clean, and lifestyle-oriented product imagery for promotional materials."
+      },
+      {
+        "num": "01",
+        "title": "UGC Video Creation",
+        "desc": "Creating authentic and engaging video content tailored for social media campaigns and digital marketing."
+      },
+      {
+        "num": "03",
+        "title": "Storytelling",
+        "desc": "Developing creative vertical videos designed to increase audience engagement and online visibility."
+      }
+    ]
+  },
+  "work": {
+    "title": "Recent",
+    "em": "work",
+    "tabs": [
+      {
+        "id": "content",
+        "label": "Content Creation",
+        "videos": [
+          {
+            "src": "assets/video/139cd845573d9c1d922d41b626cc5c0d.mp4",
+            "poster": "assets/img/a0ffaf05999f93563e286b2be1d7aa7c.jpg"
+          },
+          {
+            "src": "assets/video/f798deee08ec51030c1617a1ae136581.mp4",
+            "poster": "assets/img/8a3598b782c819ab8bea16934f3fd8cb.jpg"
+          },
+          {
+            "src": "assets/video/9e90456625b38cd8adfbca8bf6013304.mp4",
+            "poster": "assets/img/4e7e537b02a4d58812112f8c2da84c6d.jpg"
+          }
+        ]
+      },
+      {
+        "id": "ugc",
+        "label": "UGC",
+        "videos": [
+          {
+            "src": "assets/video/b0c7c9f7e4374c289453b88dc2029792.mp4",
+            "poster": "assets/img/683f590b707d8c67882382b529213869.jpg"
+          },
+          {
+            "src": "assets/video/497ba35524f3fbfdf9f6e8f8ecc0cb08.mp4",
+            "poster": "assets/img/e64ae3acb19e2f2d1763ab4a428252d7.jpg"
+          },
+          {
+            "src": "assets/video/6bcd993eb685560852c3ec5a16f923c3.mp4",
+            "poster": "assets/img/b847356bc6d28086b47cbe963dcb77bb.jpg"
+          }
+        ]
+      },
+      {
+        "id": "reviews",
+        "label": "Product Reviews",
+        "videos": [
+          {
+            "src": "assets/video/bcc866e14e675d4ee220820a9ad70f1d.mp4",
+            "poster": "assets/img/198b2653e2e7705a0c3a59a6ee7b0175.jpg"
+          },
+          {
+            "src": "assets/video/fb804ab2a01fced3b6031626f5aa4de1.mp4",
+            "poster": "assets/img/1078559d290149bf136d281d517a7449.jpg"
+          },
+          {
+            "src": "assets/video/03cc4f7cbff695d8c1041a39f8e9a878.mp4",
+            "poster": "assets/img/8586e4396bde60d4756798a17bd3c40c.jpg"
+          }
+        ]
+      },
+      {
+        "id": "story",
+        "label": "Storytelling",
+        "videos": [
+          {
+            "src": "assets/video/43c99ef21a5bb97502148be0951cd7a2.mp4",
+            "poster": "assets/img/82d001169b5e6e20062ae042cdf79c0a.jpg"
+          },
+          {
+            "src": "assets/video/dc54acb8c02d3c23b6aecf7ded5fe51d.mp4",
+            "poster": "assets/img/5cc147474226560dbcae05fdaa9727ff.jpg"
+          },
+          {
+            "src": "assets/video/24c4fd813cfb06bfcb764ff4b23d7a38.mp4",
+            "poster": "assets/img/2ede7cbb5d513129a230928eeb14d67b.jpg"
+          }
+        ]
+      }
+    ]
+  },
+  "photography": {
+    "title": "A bonus for you! 😃👀",
+    "em": "I do photography too!",
+    "photos": [
+      "assets/img/c36f40d4ac6d97e1dda01ee228295b65.jpg",
+      "assets/img/f1102bb16ca7f92febdad71bbb68e0d0.jpg",
+      "assets/img/58c710d055492175e6384c999faf14e8.jpg",
+      "assets/img/bc7981bc0bb9c3818f56745bbe9b1429.jpg",
+      "assets/img/299e03800e016fa482c2b21ef32debbe.jpg",
+      "assets/img/ca2cf549ebd6d4e35f7d0f0a3e98bdbe.jpg"
+    ]
+  },
+  "testimonials": {
+    "title": "Testimonials",
+    "em": "with results!",
+    "featured": {
+      "name": "DANA HAWASLI",
+      "avatar": "assets/img/testimonial-avatar.webp",
+      "video": {
+        "src": "assets/video/855930c991a53799d430d2515cf73a5a.mp4",
+        "poster": "assets/img/fcb46486aede383b4085ac812995dfb9.jpg"
+      },
+      "quote": "&ldquo;Translation: wow, for real wow, you are so talented, it&rsquo;s crazy! Your talent is way better than who has a 1 million followers — <strong>no way, wow</strong>.&rdquo;",
+      "stars": "★★★★★",
+      "badge": "WITHOUT A SINGLE AD! · PURE ORGANIC"
+    },
+    "others": [
+      {
+        "name": "LEA ARZOUNI"
+      },
+      {
+        "name": "IBRAHIM SEBIALY"
+      }
+    ]
+  },
+  "contact": {
+    "line1": "Let's connect &",
+    "line2": "bring your brand story to life!",
+    "thanks": "Thank you for taking the time to view my portfolio presentation. I look forward to creating impactful and engaging content together.",
+    "email": "nagham.jkheir@gmail.com",
+    "whatsapp": "https://wa.me/71292060",
+    "instagram": "https://instagram.com/withnagham",
+    "instagramDisplay": "@withnagham"
+  },
+  "footer": {
+    "name": "Nagham Kheir",
+    "tagline": "Content Creator"
+  }
+}

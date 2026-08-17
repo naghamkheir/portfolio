@@ -1,0 +1,32 @@
+# Keeps the static index.html in sync with content.json on every push.
+# GitHub Pages serves the repo root directly (enable Pages -> Deploy from branch -> main),
+# so this just makes sure the exported index.html is always up to date.
+name: Export static site
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Zero dependencies — just run the built-in exporter.
+      - name: Regenerate static index.html
+        run: node server.js --export
+
+      - name: Commit regenerated export
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: regenerate static export from content.json"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"

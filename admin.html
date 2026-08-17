@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Site Editor — Nagham Kheir</title>
+<style>
+  :root {
+    --ink: #2f2f2f;
+    --ink-soft: #6b625d;
+    --bg: #f6f1ee;
+    --card: #ffffff;
+    --line: #e7dfd9;
+    --rose: #9f5970;
+    --rose-deep: #7c4257;
+    --pink: #ff94cb;
+    --pink-soft: #ffe3f1;
+    --blush: #f6e0dc;
+    --green: #2e9e6b;
+    --red: #c0392b;
+    --radius: 14px;
+    --shadow: 0 8px 24px rgba(124, 66, 87, 0.1);
+    --shadow-lg: 0 22px 50px rgba(124, 66, 87, 0.18);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+
+  button { font-family: inherit; cursor: pointer; }
+  input[type=text], textarea, input[type=password] { font-family: inherit; }
+
+  /* ---------------- login ---------------- */
+  .login-wrap {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background:
+      radial-gradient(700px 420px at 12% 110%, rgba(255, 148, 203, 0.4), transparent 60%),
+      radial-gradient(700px 420px at 90% -10%, rgba(0, 196, 204, 0.22), transparent 60%),
+      linear-gradient(150deg, #7c4257, #9f5970 60%, #b46a84);
+    padding: 20px;
+  }
+  .login-card {
+    background: #fff; border-radius: 20px; padding: 40px 42px; width: 360px;
+    box-shadow: var(--shadow-lg); text-align: center;
+  }
+  .login-card .logo { font-size: 22px; font-weight: 800; letter-spacing: 0.02em; color: var(--rose); text-transform: uppercase; }
+  .login-card .logo span { color: var(--pink); }
+  .login-card h1 { font-size: 19px; margin: 14px 0 4px; }
+  .login-card p { font-size: 13px; color: var(--ink-soft); margin-bottom: 22px; }
+  .login-card input {
+    width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 10px;
+    font-size: 14px; margin-bottom: 12px; outline: none; transition: border-color 0.2s ease;
+  }
+  .login-card input:focus { border-color: var(--pink); }
+  .login-card button {
+    width: 100%; padding: 12px; border: 0; border-radius: 10px;
+    background: linear-gradient(90deg, var(--pink), var(--rose)); color: #fff;
+    font-weight: 700; font-size: 14px; letter-spacing: 0.02em;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+  }
+  .login-card button:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(159, 89, 112, 0.35); }
+  .login-err { color: var(--red); font-size: 13px; margin-top: 10px; display: none; }
+
+  /* ---------------- layout ---------------- */
+  .app { display: flex; min-height: 100vh; }
+
+  aside {
+    width: 244px; flex: 0 0 244px;
+    background: linear-gradient(180deg, #24201f, #1c1918);
+    color: #fff; display: flex; flex-direction: column;
+    position: sticky; top: 0; height: 100vh;
+  }
+  aside .brand { padding: 22px 22px 16px; font-size: 17px; font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase; }
+  aside .brand span { color: var(--pink); }
+  aside .brand small { display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; color: rgba(255,255,255,0.45); text-transform: uppercase; margin-top: 3px; }
+  aside nav { flex: 1; overflow-y: auto; padding: 6px 10px; }
+  aside nav button {
+    display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+    background: none; border: 0; color: rgba(255,255,255,0.72);
+    font-size: 13.5px; padding: 9px 12px; border-radius: 9px; cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  aside nav button::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.28); flex: 0 0 auto; }
+  aside nav button:hover { background: rgba(255,255,255,0.07); color: #fff; }
+  aside nav button.active { background: rgba(255,148,203,0.16); color: #fff; }
+  aside nav button.active::before { background: var(--pink); box-shadow: 0 0 0 3px rgba(255,148,203,0.25); }
+  aside .side-actions { padding: 14px 12px 18px; border-top: 1px solid rgba(255,255,255,0.09); display: grid; gap: 8px; }
+  aside .side-actions a, aside .side-actions button {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 12.5px; font-weight: 600; padding: 10px; border-radius: 9px;
+    border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.85);
+    background: transparent; text-decoration: none; transition: background 0.15s ease;
+  }
+  aside .side-actions a:hover, aside .side-actions button:hover { background: rgba(255,255,255,0.08); }
+  aside .side-actions .primary { background: var(--pink); border-color: var(--pink); color: var(--rose-deep); font-weight: 700; }
+  aside .side-actions .primary:hover { background: #ffa6d6; }
+
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 30px;
+    background: rgba(255,255,255,0.86); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar .crumbs { font-size: 12px; color: var(--ink-soft); letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
+  .topbar h2 { font-size: 20px; font-weight: 700; }
+  .topbar .spacer { flex: 1; }
+  .dirty-chip {
+    font-size: 12px; font-weight: 600; color: var(--rose);
+    background: var(--pink-soft); padding: 6px 12px; border-radius: 999px;
+    opacity: 0; transition: opacity 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .dirty-chip.show { opacity: 1; }
+  .dirty-chip::before { content: "●"; font-size: 9px; }
+  .btn-save {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(90deg, var(--rose), var(--rose-deep));
+    color: #fff; border: 0; border-radius: 10px;
+    font-size: 13.5px; font-weight: 700; padding: 11px 22px;
+    box-shadow: 0 8px 20px rgba(159, 89, 112, 0.3);
+    transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+  .btn-save:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(159, 89, 112, 0.4); }
+  .btn-save:disabled { opacity: 0.55; cursor: default; transform: none; }
+  .btn-save.ok { background: linear-gradient(90deg, var(--green), #1f7a50); }
+  .kbd { font-size: 11px; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.35); border-radius: 5px; padding: 2px 6px; }
+  .icon-btn {
+    width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line);
+    background: #fff; color: var(--ink-soft); font-size: 16px;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .icon-btn:hover { background: var(--blush); color: var(--rose); }
+
+  .content { padding: 30px; max-width: 900px; width: 100%; }
+
+  .section-desc { font-size: 13.5px; color: var(--ink-soft); margin: -8px 0 22px; }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; margin-bottom: 18px; box-shadow: var(--shadow); }
+  .card h3 { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--rose); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .card h3::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .field { margin-bottom: 18px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink-soft); margin-bottom: 7px; }
+  .field input[type=text], .field textarea {
+    width: 100%; padding: 11px 13px; font-size: 14px;
+    border: 1.5px solid var(--line); border-radius: 10px; background: #fff;
+    outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .field input[type=text]:focus, .field textarea:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(255,148,203,0.15); }
+  .field textarea { min-height: 96px; resize: vertical; line-height: 1.55; }
+  .hint { font-size: 11.5px; color: #a49b95; margin-top: 5px; }
+
+  .file-row { display: flex; align-items: center; gap: 12px; }
+  .file-row input[type=text] { flex: 1; }
+  .file-row .preview {
+    width: 54px; height: 54px; border-radius: 10px; object-fit: cover;
+    background: var(--blush); flex: 0 0 auto; border: 1px solid var(--line);
+    visibility: hidden;
+  }
+  .file-row .preview.show { visibility: visible; }
+  .upload-wrap { position: relative; flex: 0 0 auto; }
+  .upload-wrap .bar {
+    position: absolute; left: 6px; right: 6px; bottom: -4px; height: 3px; border-radius: 2px;
+    background: var(--pink); transform: scaleX(0); transform-origin: 0 50%;
+    transition: transform 0.2s ease;
+  }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 12.5px; font-weight: 600; padding: 9px 15px; border-radius: 9px;
+    border: 1.5px solid var(--line); background: #fff; color: var(--ink);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .btn:hover { border-color: var(--pink); background: var(--pink-soft); }
+  .btn.small { padding: 6px 11px; font-size: 12px; }
+  .btn.ghost-danger { color: var(--red); border-color: var(--line); background: transparent; }
+  .btn.ghost-danger:hover { border-color: var(--red); background: #fdf0ee; }
+
+  .list-editor { border: 1.5px dashed var(--line); border-radius: 12px; padding: 18px; margin-bottom: 16px; background: rgba(246, 241, 238, 0.5); }
+  .list-editor > h4 { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 14px; }
+  .list-item { border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+  .list-item:last-child { margin-bottom: 0; }
+  .item-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .item-head .item-title { font-size: 13px; font-weight: 700; color: var(--rose); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item-head .move { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--line); background: #fff; color: var(--ink-soft); font-size: 13px; line-height: 1; }
+  .item-head .move:hover:not(:disabled) { border-color: var(--pink); color: var(--rose); }
+  .item-head .move:disabled { opacity: 0.3; cursor: default; }
+  .item-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+  .item-fields .full { grid-column: 1 / -1; }
+  .add { margin-top: 14px; border-style: dashed; color: var(--rose); }
+  .add:hover { border-color: var(--rose); background: var(--pink-soft); }
+
+  .toast {
+    position: fixed; bottom: 26px; right: 26px; z-index: 100;
+    background: var(--ink); color: #fff; padding: 13px 22px; border-radius: 12px;
+    font-size: 13.5px; display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    opacity: 0; transform: translateY(10px); transition: all 0.25s ease; pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.ok { background: var(--green); }
+  .toast.err { background: var(--red); }
+  .toast::before { content: "✓"; font-weight: 800; }
+  .toast.err::before { content: "!"; }
+  .toast.info::before { content: ""; }
+
+  .nested { margin-left: 14px; padding-left: 14px; border-left: 2px solid var(--pink-soft); margin-top: 12px; }
+
+  @media (max-width: 900px) {
+    .app { flex-direction: column; }
+    aside { width: 100%; flex: none; height: auto; position: static; }
+    aside nav { display: flex; flex-wrap: wrap; padding: 8px; }
+    aside nav button { width: auto; flex: 1 1 30%; justify-content: center; text-align: center; padding: 8px 6px; font-size: 12.5px; }
+    aside nav button::before { display: none; }
+    aside .side-actions { flex-direction: row; }
+    .topbar { padding: 12px 16px; flex-wrap: wrap; }
+    .content { padding: 16px; }
+    .item-fields { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .dirty-chip, .kbd { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loginView" class="login-wrap" style="display:none">
+  <div class="login-card">
+    <div class="logo">nagham<span>kheir</span></div>
+    <h1>Site editor</h1>
+    <p>Enter the admin password to edit the website.</p>
+    <input type="password" id="pw" placeholder="Password" autocomplete="current-password" />
+    <button id="loginBtn">Log in</button>
+    <div class="login-err" id="loginErr">Wrong password. Try again.</div>
+  </div>
+</div>
+
+<div id="appView" class="app" style="display:none">
+  <aside>
+    <div class="brand">nagham<span>kheir</span><small>content editor</small></div>
+    <nav id="sectionNav"></nav>
+    <div class="side-actions">
+      <a class="primary" href="/" target="_blank">↗ View site</a>
+      <button id="logoutBtn">Log out</button>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <div class="crumbs">Editing</div>
+        <h2 id="sectionTitle"></h2>
+      </div>
+      <div class="spacer"></div>
+      <span class="dirty-chip" id="dirtyChip">Unsaved changes</span>
+      <button class="btn-save" id="saveBtn">💾 Save <span class="kbd">Ctrl+S</span></button>
+    </header>
+    <div class="content">
+      <p class="section-desc" id="sectionDesc"></p>
+      <div id="sectionBody"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+/* ---------------- schema: what can be edited ---------------- */
+
+const SCHEMA = [
+  { id: "site", label: "Site", desc: "Page title, meta description and brand text.", fields: [
+    { p: ["site", "title"], label: "Page title (browser tab)" },
+    { p: ["site", "description"], label: "Meta description (search engines)", area: true },
+    { p: ["site", "brand"], label: "Brand word 1" },
+    { p: ["site", "brandAccent"], label: "Brand word 2 (pink)" },
+  ]},
+  { id: "nav", label: "Navigation", desc: "The menu at the top of the page.", fields: [
+    { p: ["nav", "cta"], label: "CTA button text" },
+  ], lists: [
+    { p: ["nav", "links"], label: "Menu links", itemFields: [
+      { p: ["label"], label: "Label" },
+      { p: ["href"], label: "Link (e.g. #about)" },
+    ]},
+  ]},
+  { id: "hero", label: "Hero", desc: "The big welcome section at the top.", fields: [
+    { p: ["hero", "chip"], label: "Badge text" },
+    { p: ["hero", "headline1"], label: "Headline — line 1" },
+    { p: ["hero", "headline2"], label: "Headline — line 2 (outline)" },
+    { p: ["hero", "sub"], label: "Subtitle (HTML allowed, e.g. <strong>)", area: true },
+    { p: ["hero", "ctaLabel"], label: "Primary button text" },
+    { p: ["hero", "photo"], label: "Portrait photo", file: "image" },
+    { p: ["hero", "photoAlt"], label: "Photo alt text" },
+    { p: ["hero", "mailDisplay"], label: "Email text under the photo" },
+  ]},
+  { id: "cv", label: "CV / Resume", desc: "The downloadable CV file and its button text.", fields: [
+    { p: ["cv", "file"], label: "CV file (PDF)", file: "file" },
+    { p: ["cv", "label"], label: "Button text" },
+  ]},
+  { id: "ticker", label: "Ticker", desc: "The scrolling words under the hero.", lists: [
+    { p: ["ticker"], label: "Scrolling words", list: "scalar" },
+  ]},
+  { id: "about", label: "About", desc: "Your bio section.", fields: [
+    { p: ["about", "big"], label: "Big pink word" },
+    { p: ["about", "outline"], label: "Outline word" },
+    { p: ["about", "photo"], label: "Photo", file: "image" },
+    { p: ["about", "label"], label: "Heading" },
+  ], lists: [
+    { p: ["about", "paragraphs"], label: "Paragraphs (HTML allowed)", list: "scalar", area: true },
+    { p: ["about", "badges"], label: "Badges", itemFields: [
+      { p: ["num"], label: "Number / icon (e.g. A→Z)" },
+      { p: ["label"], label: "Text" },
+    ]},
+  ]},
+  { id: "niche", label: "Content Style", desc: "The niche photos with captions.", fields: [
+    { p: ["niche", "label"], label: "Heading" },
+    { p: ["niche", "desc"], label: "Description (HTML allowed)", area: true },
+  ], lists: [
+    { p: ["niche", "photos"], label: "Photos with captions", itemFields: [
+      { p: ["src"], label: "Photo", file: "image" },
+      { p: ["caption"], label: "Caption (UGC / Storytelling…)" },
+    ]},
+  ]},
+  { id: "services", label: "Services", desc: "The three service cards.", fields: [
+    { p: ["services", "title"], label: "Section title" },
+    { p: ["services", "em"], label: "Title accent word (outline)" },
+  ], lists: [
+    { p: ["services", "items"], label: "Service cards", itemFields: [
+      { p: ["num"], label: "Number (01, 02…)" },
+      { p: ["title"], label: "Title" },
+      { p: ["desc"], label: "Description", area: true },
+    ]},
+  ]},
+  { id: "work", label: "Work Videos", desc: "The tabbed video gallery. Each category holds its own videos.", fields: [
+    { p: ["work", "title"], label: "Section title" },
+    { p: ["work", "em"], label: "Title accent word (outline)" },
+  ], lists: [
+    { p: ["work", "tabs"], label: "Categories", itemFields: [
+      { p: ["id"], label: "Short id (content, ugc, reviews, story)" },
+      { p: ["label"], label: "Tab label" },
+    ], nestedList: {
+      p: ["videos"], label: "Videos in this category", itemFields: [
+        { p: ["src"], label: "Video file", file: "video" },
+        { p: ["poster"], label: "Poster image (shown before play)", file: "image" },
+      ],
+    }},
+  ]},
+  { id: "photography", label: "Photography", desc: "The photo grid.", fields: [
+    { p: ["photography", "title"], label: "Section title" },
+    { p: ["photography", "em"], label: "Title accent word (outline)" },
+  ], lists: [
+    { p: ["photography", "photos"], label: "Photos", list: "scalar", file: "image" },
+  ]},
+  { id: "testimonials", label: "Testimonials", desc: "The featured client, quote and other names.", fields: [
+    { p: ["testimonials", "title"], label: "Section title" },
+    { p: ["testimonials", "em"], label: "Title accent word (outline)" },
+    { p: ["testimonials", "featured", "name"], label: "Featured client name" },
+    { p: ["testimonials", "featured", "avatar"], label: "Featured client photo", file: "image" },
+    { p: ["testimonials", "featured", "video", "src"], label: "Testimonial video", file: "video" },
+    { p: ["testimonials", "featured", "video", "poster"], label: "Video poster image", file: "image" },
+    { p: ["testimonials", "featured", "quote"], label: "Quote (HTML allowed)", area: true },
+    { p: ["testimonials", "featured", "stars"], label: "Stars" },
+    { p: ["testimonials", "featured", "badge"], label: "Badge line" },
+  ], lists: [
+    { p: ["testimonials", "others"], label: "Other clients", itemFields: [
+      { p: ["name"], label: "Name" },
+    ]},
+  ]},
+  { id: "contact", label: "Contact", desc: "The closing section and your contact links.", fields: [
+    { p: ["contact", "line1"], label: "Big line 1" },
+    { p: ["contact", "line2"], label: "Big line 2" },
+    { p: ["contact", "thanks"], label: "Thank-you text (HTML allowed)", area: true },
+    { p: ["contact", "email"], label: "Email" },
+    { p: ["contact", "whatsapp"], label: "WhatsApp link (wa.me/…)" },
+    { p: ["contact", "instagram"], label: "Instagram link" },
+    { p: ["contact", "instagramDisplay"], label: "Instagram text shown on buttons" },
+  ]},
+  { id: "footer", label: "Footer", desc: "The small line at the very bottom.", fields: [
+    { p: ["footer", "name"], label: "Name" },
+    { p: ["footer", "tagline"], label: "Tagline" },
+  ]},
+];
+
+/* ---------------- helpers ---------------- */
+
+const $ = (sel) => document.querySelector(sel);
+
+function get(obj, pathArr) {
+  let cur = obj;
+  for (const k of pathArr) {
+    if (cur == null) return undefined;
+    cur = cur[k];
+  }
+  return cur;
+}
+function set(obj, pathArr, val) {
+  let cur = obj;
+  for (let i = 0; i < pathArr.length - 1; i++) {
+    if (cur[pathArr[i]] == null) cur[pathArr[i]] = {};
+    cur = cur[pathArr[i]];
+  }
+  cur[pathArr[pathArr.length - 1]] = val;
+  markDirty();
+}
+
+let content = null;
+let activeSection = SCHEMA[0].id;
+let dirty = false;
+
+function markDirty() {
+  dirty = true;
+  $("#dirtyChip").classList.add("show");
+  const btn = $("#saveBtn");
+  btn.classList.remove("ok");
+  btn.disabled = false;
+}
+
+function clearDirty() {
+  dirty = false;
+  $("#dirtyChip").classList.remove("show");
+  const btn = $("#saveBtn");
+  btn.classList.add("ok");
+  btn.textContent = "Saved ✓";
+  btn.disabled = true;
+  setTimeout(() => {
+    if (!dirty) {
+      btn.classList.remove("ok");
+      btn.innerHTML = "💾 Save <span class=\"kbd\">Ctrl+S</span>";
+    }
+  }, 1800);
+}
+
+function toast(msg, kind) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.className = "toast show " + (kind || "");
+  clearTimeout(t._h);
+  t._h = setTimeout(() => (t.className = "toast"), 2600);
+}
+
+/* ---------------- api ---------------- */
+
+async function api(path, opts) {
+  const res = await fetch(path, opts);
+  if (res.status === 401) { showLogin(); throw new Error("unauthorized"); }
+  if (!res.ok) {
+    let msg = res.statusText;
+    try { msg = (await res.json()).error || msg; } catch (_) {}
+    throw new Error(msg);
+  }
+  return res.json();
+}
+
+/* ---------------- file upload (XHR with progress) ---------------- */
+
+function uploadFile(file, onProgress, optimized) {
+  return new Promise((resolve, reject) => {
+    const name = file.name.replace(/[^A-Za-z0-9._-]/g, "_");
+    const xhr = new XMLHttpRequest();
+    xhr.open("PUT", "/api/upload/" + encodeURIComponent(name));
+    if (optimized) xhr.setRequestHeader("x-optimized", "1");
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable && onProgress) onProgress(e.loaded / e.total);
+    };
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try { resolve(JSON.parse(xhr.responseText).path); }
+        catch (_) { reject(new Error("Bad response")); }
+      } else {
+        let msg = "Upload failed";
+        try { msg = JSON.parse(xhr.responseText).error || msg; } catch (_) {}
+        reject(new Error(msg));
+      }
+    };
+    xhr.onerror = () => reject(new Error("Upload failed"));
+    xhr.send(file);
+  });
+}
+
+/* ---------------- upload optimization (compresses before it reaches the site) ---------------- */
+
+const MAX_IMG_DIM = 2000; // longest side of an uploaded photo
+const IMG_QUALITY = 0.82;
+const MAX_VIDEO_DIM = 1920; // longest side, ~1080p
+const VIDEO_BITRATE = 2500000; // ~2.5 Mbps — good quality, web-friendly size
+const VIDEO_SKIP_BYTES = 5 * 1024 * 1024; // smaller clips are already efficient — leave them
+
+function canOptimizeVideo() {
+  return (
+    typeof HTMLMediaElement !== "undefined" &&
+    typeof HTMLMediaElement.prototype.captureStream === "function" &&
+    typeof MediaRecorder !== "undefined" &&
+    (MediaRecorder.isTypeSupported("video/webm;codecs=vp9") || MediaRecorder.isTypeSupported("video/webm;codecs=vp8"))
+  );
+}
+
+async function optimizeImage(file) {
+  // GIF/SVG keep their original format; tiny webp files are already optimized
+  if (/\.gif$/i.test(file.name) || /\.svg$/i.test(file.name)) return file;
+  if (/\.webp$/i.test(file.name) && file.size < 300 * 1024) return file;
+  try {
+    const url = URL.createObjectURL(file);
+    const img = await new Promise((res, rej) => {
+      const i = new Image();
+      i.onload = () => res(i);
+      i.onerror = () => rej(new Error("decode"));
+      i.src = url;
+    });
+    const w = img.naturalWidth, h = img.naturalHeight;
+    if (!w || !h) throw new Error("no dims");
+    const scale = Math.min(1, MAX_IMG_DIM / Math.max(w, h));
+    const cw = Math.max(1, Math.round(w * scale));
+    const ch = Math.max(1, Math.round(h * scale));
+    const cv = document.createElement("canvas");
+    cv.width = cw; cv.height = ch;
+    cv.getContext("2d").drawImage(img, 0, 0, cw, ch);
+    const blob = await new Promise((res) => cv.toBlob(res, "image/webp", IMG_QUALITY));
+    URL.revokeObjectURL(url);
+    if (!blob || blob.size === 0) throw new Error("encode");
+    return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".webp", { type: "image/webp" });
+  } catch (e) {
+    return file; // couldn't process — upload the original
+  }
+}
+
+function optimizeVideo(file, onProgress) {
+  return new Promise((resolve) => {
+    let raf = null, rec = null, v = null, timer = null;
+    const bail = () => {
+      if (raf) cancelAnimationFrame(raf);
+      try { if (rec && rec.state !== "inactive") rec.stop(); } catch (_) {}
+      try { if (v) { v.onended = v.onerror = v.ontimeupdate = null; v.pause(); v.removeAttribute("src"); v.load(); } } catch (_) {}
+      if (timer) clearTimeout(timer);
+      resolve(file);
+    };
+    if (!canOptimizeVideo() || file.size < VIDEO_SKIP_BYTES) return bail();
+    const url = URL.createObjectURL(file);
+    v = document.createElement("video");
+    v.muted = true; // required for autoplay — the captured audio track is unaffected
+    v.playsInline = true;
+    v.preload = "auto";
+    v.src = url;
+    let started = false;
+    const timeoutMs = Math.min(600000, (file.size / (1024 * 1024)) * 3000 + 30000);
+    timer = setTimeout(bail, timeoutMs);
+    v.onerror = () => { clearTimeout(timer); bail(); };
+    v.onloadedmetadata = () => {
+      if (started) return;
+      started = true;
+      const vw = v.videoWidth, vh = v.videoHeight;
+      if (!vw || !vh) { clearTimeout(timer); URL.revokeObjectURL(url); return bail(); }
+      // Smart skip: if the source is already efficiently compressed (≤ ~2.8 Mbps),
+      // re-encoding would only make it bigger — keep the original.
+      const dur = v.duration;
+      if (dur && isFinite(dur) && dur > 0 && (file.size * 8) / (dur * 1000) <= 2800) {
+        clearTimeout(timer); URL.revokeObjectURL(url); return bail();
+      }
+      const scale = Math.min(1, MAX_VIDEO_DIM / Math.max(vw, vh));
+      const cw = Math.max(2, Math.round(vw * scale));
+      const ch = Math.max(2, Math.round(vh * scale));
+      const cv = document.createElement("canvas");
+      cv.width = cw; cv.height = ch;
+      const ctx = cv.getContext("2d");
+      let stream;
+      try {
+        stream = cv.captureStream(30);
+        const srcStream = v.captureStream();
+        (srcStream.getAudioTracks() || []).forEach((t) => stream.addTrack(t));
+      } catch (e) { clearTimeout(timer); URL.revokeObjectURL(url); return bail(); }
+      const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
+        ? "video/webm;codecs=vp9"
+        : "video/webm;codecs=vp8";
+      rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: VIDEO_BITRATE, audioBitsPerSecond: 128000 });
+      const chunks = [];
+      rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+      const done = new Promise((res) => { rec.onstop = () => res(new Blob(chunks, { type: mime })); });
+      const draw = () => { ctx.drawImage(v, 0, 0, cw, ch); raf = requestAnimationFrame(draw); };
+      v.ontimeupdate = () => {
+        if (v.duration && isFinite(v.duration) && onProgress) onProgress(Math.min(0.99, v.currentTime / v.duration));
+      };
+      const finish = async () => {
+        try {
+          await new Promise((r) => setTimeout(r, 500)); // let the last frames flush
+          cancelAnimationFrame(raf);
+          rec.stop();
+          const blob = await done;
+          clearTimeout(timer);
+          URL.revokeObjectURL(url);
+          if (!blob || blob.size === 0) return bail();
+          resolve(new File([blob], file.name.replace(/\.[^.]+$/, "") + ".webm", { type: mime }));
+        } catch (e) { clearTimeout(timer); URL.revokeObjectURL(url); bail(); }
+      };
+      v.onended = finish;
+      v.play().then(() => {
+        rec.start(250);
+        raf = requestAnimationFrame(draw);
+      }).catch(() => { clearTimeout(timer); URL.revokeObjectURL(url); bail(); });
+    };
+  });
+}
+
+async function uploadFileOptimized(file, kind, onProgress, onStage) {
+  let outFile = file;
+  let optimized = false;
+  if (kind === "image") {
+    if (onStage) onStage("Optimizing…");
+    outFile = await optimizeImage(file);
+    optimized = outFile !== file;
+  } else if (kind === "video") {
+    if (onStage) onStage("Optimizing (≈ video length)…");
+    outFile = await optimizeVideo(file, (p) => onProgress && onProgress(p * 0.85));
+    optimized = outFile !== file;
+  }
+  // kind === "file" (PDF, etc.) is uploaded as-is — never re-encoded
+  if (onStage) onStage("Uploading…");
+  const path = await uploadFile(outFile, (p) => onProgress && onProgress(0.85 + p * 0.15), optimized);
+  return path;
+}
+
+/* ---------------- field renderers ---------------- */
+
+function makeUploader(pathArr, kind) {
+  const wrap = document.createElement("div");
+  wrap.className = "file-row";
+  const input = document.createElement("input");
+  input.type = "text";
+  input.value = get(content, pathArr) || "";
+  input.addEventListener("input", () => set(content, pathArr, input.value));
+  const preview =
+    kind === "image" ? document.createElement("img")
+    : kind === "video" ? document.createElement("video")
+    : document.createElement("a"); // kind === "file" -> link to the uploaded file
+  preview.className = "preview";
+  if (kind === "video") { preview.muted = true; preview.playsInline = true; }
+  if (kind === "file") { preview.target = "_blank"; preview.rel = "noopener"; preview.textContent = "View file ↗"; }
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "btn small";
+  btn.textContent = "Upload";
+  const file = document.createElement("input");
+  file.type = "file";
+  file.accept = kind === "image" ? "image/*" : kind === "video" ? "video/mp4,video/webm,video/quicktime" : ".pdf,application/pdf";
+  file.style.display = "none";
+  const progress = document.createElement("span");
+  progress.className = "bar";
+  btn.addEventListener("click", () => file.click());
+  const origBtnText = btn.textContent;
+  file.addEventListener("change", async () => {
+    const f = file.files[0];
+    if (!f) return;
+    progress.style.transform = "scaleX(0)";
+    btn.textContent = "Working…";
+    btn.disabled = true;
+    try {
+      const p = await uploadFileOptimized(
+        f,
+        kind,
+        (frac) => (progress.style.transform = "scaleX(" + frac + ")"),
+        (msg) => (btn.textContent = msg)
+      );
+      input.value = p;
+      set(content, pathArr, p);
+      refreshPreview(preview, p);
+      progress.style.transform = "scaleX(1)";
+      setTimeout(() => (progress.style.transform = "scaleX(0)"), 900);
+      toast("Uploaded ✓" + (kind === "file" ? "" : " (compressed)"), "ok");
+    } catch (e) {
+      progress.style.transform = "scaleX(0)";
+      toast("Upload failed: " + e.message, "err");
+    } finally {
+      btn.textContent = origBtnText;
+      btn.disabled = false;
+      file.value = "";
+    }
+  });
+  const upWrap = document.createElement("div");
+  upWrap.className = "upload-wrap";
+  upWrap.append(btn, progress);
+  wrap.append(input, preview, upWrap, file);
+  refreshPreview(preview, input.value);
+  return wrap;
+}
+
+function refreshPreview(el, src) {
+  if (!src) { el.classList.remove("show"); return; }
+  el.classList.add("show");
+  if (el.tagName === "A") { el.href = src; return; }
+  el.src = src;
+}
+
+function makeInputField(field, pathArr) {
+  const div = document.createElement("div");
+  div.className = "field";
+  const label = document.createElement("label");
+  label.textContent = field.label;
+  div.appendChild(label);
+  if (field.file) {
+    div.appendChild(makeUploader(pathArr, field.file));
+  } else if (field.area) {
+    const ta = document.createElement("textarea");
+    ta.value = get(content, pathArr) || "";
+    ta.addEventListener("input", () => set(content, pathArr, ta.value));
+    div.appendChild(ta);
+  } else {
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.value = get(content, pathArr) || "";
+    inp.addEventListener("input", () => set(content, pathArr, inp.value));
+    div.appendChild(inp);
+  }
+  return div;
+}
+
+function makeListEditor(listDef) {
+  const wrap = document.createElement("div");
+  wrap.className = "list-editor";
+  const h = document.createElement("h4");
+  h.textContent = listDef.label;
+  wrap.appendChild(h);
+  const items = get(content, listDef.p) || [];
+
+  const renderItems = () => {
+    wrap.querySelectorAll(".list-item").forEach((n) => n.remove());
+    items.forEach((item, idx) => wrap.appendChild(renderItem(item, idx)));
+  };
+
+  const renderItem = (item, idx) => {
+    const row = document.createElement("div");
+    row.className = "list-item";
+    const head = document.createElement("div");
+    head.className = "item-head";
+    const title = document.createElement("span");
+    title.className = "item-title";
+    const label = item && (item.label || item.title || item.name);
+    title.textContent = "#" + (idx + 1) + (label ? " · " + label : "");
+    const up = document.createElement("button");
+    up.type = "button"; up.className = "move"; up.textContent = "↑";
+    up.disabled = idx === 0; up.title = "Move up";
+    up.addEventListener("click", () => { swap(idx, idx - 1); });
+    const down = document.createElement("button");
+    down.type = "button"; down.className = "move"; down.textContent = "↓";
+    down.disabled = idx === items.length - 1; down.title = "Move down";
+    down.addEventListener("click", () => { swap(idx, idx + 1); });
+    const rm = document.createElement("button");
+    rm.type = "button"; rm.className = "btn small ghost-danger"; rm.textContent = "Remove";
+    rm.addEventListener("click", () => { items.splice(idx, 1); renderItems(); });
+    head.append(title, up, down, rm);
+    row.appendChild(head);
+
+    const fields = document.createElement("div");
+    fields.className = "item-fields";
+
+    if (listDef.list === "scalar") {
+      const p = document.createElement("div");
+      p.className = "full";
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = item || "";
+      input.addEventListener("input", () => { items[idx] = input.value; markDirty(); });
+      if (listDef.file === "image") {
+        const preview = document.createElement("img");
+        preview.className = "preview";
+        preview.style.marginTop = "8px";
+        refreshPreview(preview, input.value);
+        const btn = document.createElement("button");
+        btn.type = "button"; btn.className = "btn small"; btn.textContent = "Upload";
+        const file = document.createElement("input");
+        file.type = "file"; file.accept = "image/*"; file.style.display = "none";
+        btn.addEventListener("click", () => file.click());
+        const progress = document.createElement("span");
+        progress.className = "bar";
+        const origBtnText = btn.textContent;
+        file.addEventListener("change", async () => {
+          const f = file.files[0]; if (!f) return;
+          progress.style.transform = "scaleX(0)";
+          btn.textContent = "Working…";
+          btn.disabled = true;
+          try {
+            const path = await uploadFileOptimized(
+              f,
+              "image",
+              (frac) => (progress.style.transform = "scaleX(" + frac + ")"),
+              (msg) => (btn.textContent = msg)
+            );
+            input.value = path; items[idx] = path; refreshPreview(preview, path);
+            markDirty();
+            progress.style.transform = "scaleX(1)";
+            setTimeout(() => (progress.style.transform = "scaleX(0)"), 900);
+            toast("Uploaded ✓ (compressed)", "ok");
+          } catch (e) { toast("Upload failed: " + e.message, "err"); }
+          finally {
+            btn.textContent = origBtnText;
+            btn.disabled = false;
+            file.value = "";
+          }
+        });
+        const rowf = document.createElement("div");
+        rowf.className = "file-row";
+        const upWrap = document.createElement("div");
+        upWrap.className = "upload-wrap";
+        upWrap.append(btn, progress);
+        rowf.append(input, preview, upWrap, file);
+        p.appendChild(rowf);
+      } else {
+        p.appendChild(input);
+      }
+      fields.appendChild(p);
+    } else {
+      const itemFields = listDef.itemFields || [];
+      const isNested = !!listDef.nestedList;
+      itemFields.forEach((f) => {
+        const wrapF = document.createElement("div");
+        if (f.area) wrapF.className = "full";
+        const label = document.createElement("label");
+        label.textContent = f.label;
+        wrapF.appendChild(label);
+        if (f.file) {
+          wrapF.appendChild(makeUploader(listDef.p.concat([idx]).concat(f.p), f.file));
+        } else if (f.area) {
+          const ta = document.createElement("textarea");
+          ta.value = get(item, f.p) || "";
+          ta.addEventListener("input", () => set(item, f.p, ta.value));
+          wrapF.appendChild(ta);
+        } else {
+          const inp = document.createElement("input");
+          inp.type = "text";
+          inp.value = get(item, f.p) || "";
+          inp.addEventListener("input", () => set(item, f.p, inp.value));
+          wrapF.appendChild(inp);
+        }
+        fields.appendChild(wrapF);
+      });
+      if (isNested) {
+        const nest = document.createElement("div");
+        nest.className = "full nested";
+        nest.appendChild(makeListEditor({ ...listDef.nestedList, p: listDef.p.concat([idx]).concat(listDef.nestedList.p) }));
+        fields.appendChild(nest);
+      }
+    }
+    row.appendChild(fields);
+    return row;
+  };
+
+  const swap = (a, b) => {
+    if (b < 0 || b >= items.length) return;
+    const tmp = items[a];
+    items[a] = items[b];
+    items[b] = tmp;
+    markDirty();
+    renderItems();
+  };
+
+  const add = document.createElement("button");
+  add.type = "button";
+  add.className = "btn small add";
+  add.textContent = "+ Add " + (listDef.list === "scalar" ? "item" : "one");
+  add.addEventListener("click", () => {
+    const newItem = listDef.list === "scalar" ? "" : {};
+    if (listDef.itemFields && listDef.nestedList) newItem[listDef.nestedList.p[0]] = [];
+    items.push(newItem);
+    markDirty();
+    renderItems();
+  });
+  renderItems();
+  wrap.appendChild(add);
+  return wrap;
+}
+
+/* ---------------- render a section ---------------- */
+
+function renderSection(section) {
+  $("#sectionTitle").textContent = section.label;
+  $("#sectionDesc").textContent = section.desc || "";
+  const body = $("#sectionBody");
+  body.innerHTML = "";
+  if (section.fields && section.fields.length) {
+    const card = document.createElement("div");
+    card.className = "card";
+    const h3 = document.createElement("h3");
+    h3.textContent = section.label;
+    card.appendChild(h3);
+    section.fields.forEach((f) => card.appendChild(makeInputField(f, f.p)));
+    body.appendChild(card);
+  }
+  (section.lists || []).forEach((l) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    const h3 = document.createElement("h3");
+    h3.textContent = l.label;
+    card.appendChild(h3);
+    card.appendChild(makeListEditor(l));
+    body.appendChild(card);
+  });
+}
+
+/* ---------------- app state ---------------- */
+
+function buildNav() {
+  const nav = $("#sectionNav");
+  nav.innerHTML = "";
+  SCHEMA.forEach((s) => {
+    const b = document.createElement("button");
+    b.textContent = s.label;
+    b.dataset.id = s.id;
+    if (s.id === activeSection) b.className = "active";
+    b.addEventListener("click", () => {
+      activeSection = s.id;
+      nav.querySelectorAll("button").forEach((x) => x.classList.remove("active"));
+      b.classList.add("active");
+      renderSection(s);
+    });
+    nav.appendChild(b);
+  });
+}
+
+function showLogin() {
+  $("#loginView").style.display = "flex";
+  $("#appView").style.display = "none";
+}
+function showEditor() {
+  $("#loginView").style.display = "none";
+  $("#appView").style.display = "flex";
+}
+
+async function init() {
+  try {
+    content = await api("/api/content");
+    showEditor();
+    buildNav();
+    renderSection(SCHEMA.find((s) => s.id === activeSection));
+    clearDirty();
+  } catch (e) {
+    showLogin();
+  }
+}
+
+/* ---------------- events ---------------- */
+
+$("#loginBtn").addEventListener("click", async () => {
+  const pw = $("#pw").value;
+  try {
+    await api("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: pw }),
+    });
+    $("#pw").value = "";
+    $("#loginErr").style.display = "none";
+    await init();
+  } catch (e) {
+    $("#loginErr").style.display = "block";
+  }
+});
+$("#pw").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#loginBtn").click(); });
+
+$("#saveBtn").addEventListener("click", save);
+async function save() {
+  try {
+    await api("/api/content", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(content),
+    });
+    clearDirty();
+    toast("Saved — the live site is up to date", "ok");
+  } catch (e) {
+    toast("Save failed: " + e.message, "err");
+  }
+}
+
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+    e.preventDefault();
+    if (dirty) save();
+  }
+});
+
+$("#logoutBtn").addEventListener("click", async () => {
+  await api("/api/logout", { method: "POST" }).catch(() => {});
+  showLogin();
+});
+
+init();
+</script>
+</body>
+</html>

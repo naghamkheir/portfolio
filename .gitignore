@@ -1,0 +1,8 @@
+server-config.json
+node_modules/
+*.log
+
+# unrelated personal files (not part of the site)
+skills/
+stats/
+*.ogg

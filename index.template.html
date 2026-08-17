@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{site.title}}</title>
+  <meta name="description" content="{{site.description}}" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preload" as="font" type="font/woff" href="assets/fonts/2b94b8bc5954e5d82d5fbf0eff39c91d.woff" crossorigin />
+  <link rel="preload" as="font" type="font/woff" href="assets/fonts/3d1c4de590b27e3784eff931397f7d65.woff" crossorigin />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="scrollbar" id="scrollbar" aria-hidden="true"></div>
+
+  <!-- ================= NAV ================= -->
+  <header class="nav" id="nav">
+    <a class="nav-brand" href="#top">{{site.brand}}<span>{{site.brandAccent}}</span></a>
+    <nav class="nav-links" id="navLinks">
+      {{#nav.links}}<a href="{{href}}">{{label}}</a>{{/nav.links}}
+    </nav>
+    <a class="nav-cta" href="#contact">{{nav.cta}}</a>
+    <button class="nav-burger" id="navBurger" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <main id="top">
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="hero">
+      <span class="spark spark-1" aria-hidden="true"></span>
+      <span class="spark spark-2" aria-hidden="true"></span>
+      <span class="spark spark-3" aria-hidden="true"></span>
+      <span class="spark spark-4" aria-hidden="true"></span>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="hero-chip">{{hero.chip}}</p>
+          <h1 class="hero-title">
+            <span>{{hero.headline1}}</span>
+            <span class="hero-title-outline">{{hero.headline2}}</span>
+          </h1>
+          <p class="hero-sub">{{hero.sub|raw}}</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="mailto:{{contact.email}}">{{hero.ctaLabel}}</a>
+            <a class="btn btn-ghost" href="{{contact.whatsapp}}" target="_blank" rel="noopener">
+              <img src="assets/img/icon-whatsapp.svg" alt="" /> WhatsApp
+            </a>
+            <a class="btn btn-ghost" href="{{contact.instagram}}" target="_blank" rel="noopener">{{contact.instagramDisplay}}</a>
+            {{#if cv.file}}<a class="btn btn-ghost btn-cv" href="{{cv.file}}" target="_blank" rel="noopener">{{cv.label}}</a>{{/if}}
+          </div>
+        </div>
+        <div class="hero-photo">
+          <div class="hero-photo-frame">
+            <img src="{{hero.photo}}" alt="{{hero.photoAlt}}" fetchpriority="high" decoding="async" />
+          </div>
+          <a class="hero-mail" href="mailto:{{contact.email}}">{{hero.mailDisplay}}</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TICKER ================= -->
+    <div class="ticker-wrap" aria-hidden="true">
+    <div class="ticker">
+      <div class="ticker-track">
+        {{#ticker}}{{.}}<i>✦</i>{{/ticker}}
+        {{#ticker}}{{.}}<i>✦</i>{{/ticker}}
+      </div>
+    </div>
+    </div>
+
+    <!-- ================= ABOUT ================= -->
+    <section class="about section" id="about">
+      <div class="about-art reveal reveal-left">
+        <span class="about-outline">{{about.outline}}</span>
+        <span class="about-big">{{about.big}}</span>
+        <div class="about-photo">
+          <img src="{{about.photo}}" alt="Nagham Kheir at work" loading="lazy" />
+        </div>
+      </div>
+      <div class="about-body">
+        <h2 class="section-label reveal">{{about.label}}</h2>
+        {{#about.paragraphs}}<p class="reveal">{{.|raw}}</p>{{/about.paragraphs}}
+        <div class="about-badges reveal">
+          {{#about.badges}}<div class="badge"><span class="badge-num">{{num}}</span><span>{{label}}</span></div>{{/about.badges}}
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= NICHE ================= -->
+    <section class="niche section" id="niche">
+      <div class="niche-head">
+        <h2 class="section-label reveal">{{niche.label}}</h2>
+        <p class="reveal">{{niche.desc|raw}}</p>
+      </div>
+      <div class="niche-grid">
+        {{#niche.photos}}<figure class="reveal"><img src="{{src}}" alt="" loading="lazy" /><figcaption>{{caption}}</figcaption></figure>{{/niche.photos}}
+      </div>
+    </section>
+
+    <!-- ================= SERVICES ================= -->
+    <section class="services section" id="services">
+      <h2 class="section-title reveal">{{services.title}} <em>{{services.em}}</em></h2>
+      <div class="services-grid">
+        {{#services.items}}<article class="service-card reveal">
+          <span class="service-num">{{num}}</span>
+          <h3>{{title}}</h3>
+          <p>{{desc}}</p>
+        </article>{{/services.items}}
+      </div>
+    </section>
+
+    <!-- ================= WORK (VIDEOS) ================= -->
+    <section class="work section" id="work">
+      <h2 class="section-title reveal">{{work.title}} <em>{{work.em}}</em></h2>
+      <div class="work-tabs reveal" role="tablist">
+        {{#work.tabs}}<button class="work-tab{{#first}} active{{/first}}" data-cat="{{id}}" role="tab">{{label}}</button>{{/work.tabs}}
+      </div>
+      <div class="work-grid" id="workGrid">
+        {{#work.tabs}}{{#videos}}
+        <article class="video-card" data-cat="{{id}}"{{#if poster}} style="background-image:url('{{poster}}')"{{/if}}>
+          <video src="{{src}}" muted loop playsinline preload="none"></video>
+        </article>
+        {{/videos}}{{/work.tabs}}
+      </div>
+    </section>
+
+    <!-- ================= PHOTOGRAPHY ================= -->
+    <section class="photo section" id="photography">
+      <h2 class="section-title reveal">{{photography.title}} <em>{{photography.em}}</em></h2>
+      <div class="photo-grid" id="photoGrid">
+        {{#photography.photos}}<figure class="reveal"><img src="{{.}}" alt="" loading="lazy" /></figure>{{/photography.photos}}
+      </div>
+    </section>
+
+    <!-- ================= TESTIMONIALS ================= -->
+    <section class="testimonials section" id="testimonials">
+      <h2 class="section-title reveal">{{testimonials.title}} <em>{{testimonials.em}}</em></h2>
+      <div class="testi-card reveal reveal-zoom">
+        <div class="testi-media">
+          <figure class="testi-video"{{#if testimonials.featured.video.poster}} style="background-image:url('{{testimonials.featured.video.poster}}')"{{/if}}>
+            <video src="{{testimonials.featured.video.src}}" muted loop playsinline preload="none"></video>
+          </figure>
+          <span class="testi-avatar"{{#if testimonials.featured.avatar}} style="background-image:url('{{testimonials.featured.avatar}}')"{{/if}}></span>
+        </div>
+        <div class="testi-main">
+          <blockquote class="testi-quote">{{testimonials.featured.quote|raw}}</blockquote>
+          <div class="testi-stars">
+            <span class="stars" aria-label="Five stars">{{testimonials.featured.stars}}</span>
+            <span class="testi-badge">{{testimonials.featured.badge}}</span>
+          </div>
+          <p class="testi-client">{{testimonials.featured.name}}</p>
+        </div>
+      </div>
+      <div class="testi-others reveal">
+        {{#testimonials.others}}<div class="testi-person"><span class="testi-dot"></span><span>{{name}}</span></div>{{/testimonials.others}}
+      </div>
+    </section>
+
+    <!-- ================= CONTACT ================= -->
+    <section class="contact section" id="contact">
+      <h2 class="contact-title">
+        <span class="contact-outline reveal reveal-zoom">{{contact.line1}}</span>
+        <span class="reveal reveal-zoom">{{contact.line2}}</span>
+      </h2>
+      <p class="contact-thanks reveal">{{contact.thanks|raw}}</p>
+      <div class="contact-actions reveal">
+        <a class="btn btn-primary" href="mailto:{{contact.email}}">{{contact.email}}</a>
+        <a class="btn btn-ghost-light" href="{{contact.whatsapp}}" target="_blank" rel="noopener">
+          <img src="assets/img/icon-whatsapp.svg" alt="" /> WhatsApp
+        </a>
+        <a class="btn btn-ghost-light" href="{{contact.instagram}}" target="_blank" rel="noopener">{{contact.instagramDisplay}}</a>
+        {{#if cv.file}}<a class="btn btn-ghost-light btn-cv" href="{{cv.file}}" target="_blank" rel="noopener">{{cv.label}}</a>{{/if}}
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= LIGHTBOX ================= -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+    <button class="lightbox-prev" id="lightboxPrev" aria-label="Previous">&larr;</button>
+    <img id="lightboxImg" src="" alt="" />
+    <button class="lightbox-next" id="lightboxNext" aria-label="Next">&rarr;</button>
+  </div>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> {{footer.name}} — {{footer.tagline}}. Made with ♥</p>
+  </footer>
+
+  <button class="to-top" id="toTop" aria-label="Back to top">↑</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
