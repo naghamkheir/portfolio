@@ -981,14 +981,16 @@ section[id], main[id] { scroll-margin-top: 78px; }
   margin: 0;
   line-height: 0;
   background: var(--blush);
+  display: flex;
+  justify-content: center;
 }
 
 .result-screenshot img {
-  width: 100%;
+  width: auto;
   height: auto;
+  max-width: 100%;
   display: block;
-  object-fit: cover;
-  aspect-ratio: 9 / 16;
+  object-fit: contain;
 }
 
 .result-info {
