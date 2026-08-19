@@ -216,7 +216,7 @@
         "name": "DANA HAWASLI",
         "avatar": "assets/img/testimonial-avatar.webp",
         "quote": "&ldquo;Translation: wow, for real wow, you are so talented, it&rsquo;s crazy! Your talent is way better than who has a 1 million followers — <strong>no way, wow</strong>.&rdquo;",
-        "audio": "",
+        "audio": "assets/audio/0817.MP3",
         "video": {
           "src": "",
           "poster": ""
@@ -233,7 +233,7 @@
           "src": "",
           "poster": ""
         },
-        "stars": "",
+        "stars": "★★★★★",
         "badge": ""
       },
       {
@@ -245,7 +245,7 @@
           "src": "",
           "poster": ""
         },
-        "stars": "",
+        "stars": "★★★★★",
         "badge": ""
       }
     ]
