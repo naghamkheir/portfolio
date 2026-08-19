@@ -262,7 +262,12 @@
   "results": {
     "title": "Results",
     "em": "with data!",
-    "items": []
+    "items": [
+      {
+        "title": "Oreo Cafe",
+        "screenshot": "assets/img/WhatsApp_Image_2026-08-18_at_12.17.29_AM__1_.webp"
+      }
+    ]
   },
   "footer": {
     "name": "Nagham Kheir",
