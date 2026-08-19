@@ -1190,7 +1190,11 @@ detectMode().then((mode) => {
     /* GitHub Pages mode — use PAT login */
     const viewLink = $("#viewSite");
     if (viewLink) viewLink.href = `https://${gh.owner}.github.io/${gh.repo}/`;
-    if (gh.token && gh.owner && gh.repo) init();
+    if (gh.token && gh.owner && gh.repo) {
+      init();
+    } else {
+      showLogin();
+    }
   }
 });
 </script>
