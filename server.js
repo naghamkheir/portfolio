@@ -406,7 +406,9 @@ const server = http.createServer((req, res) => {
 
 if (process.argv.includes("--export")) {
   try {
-    fs.writeFileSync("index.html", renderSite());
+    const loader = '  <script src="content-loader.js"></script>\n';
+    const staticSite = renderSite().replace("  <script src=\"script.js\"></script>\n", loader + "  <script src=\"script.js\"></script>\n");
+    fs.writeFileSync("index.html", staticSite);
     console.log("index.html written (static export).");
   } catch (e) {
     console.error("Export failed:", e.message);

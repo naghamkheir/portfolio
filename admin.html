@@ -1224,22 +1224,8 @@ async function save() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(content),
     });
-    /* In GitHub mode, also export the rendered index.html so the live site updates */
-    if (gh.token) {
-      try {
-        toast("Exporting index.html…", "info");
-        const { content: tplText } = await ghRead("index.template.html");
-        const rendered = tplRender(tplText, content);
-        const indexSha = await ghGetSha("index.html");
-        await ghWrite("index.html", rendered, indexSha, "Auto-export index.html from content.json");
-      } catch (e) {
-        toast("Content saved but export failed: " + e.message, "err");
-        clearDirty();
-        return;
-      }
-    }
     clearDirty();
-    toast(gh.token ? "Saved and published — GitHub Pages may take a minute to refresh." : "Saved — the site updates now.", "ok");
+    toast(gh.token ? "Saved — the live site now reads this content on refresh." : "Saved — the site updates now.", "ok");
   } catch (e) {
     toast("Save failed: " + e.message, "err");
   }
