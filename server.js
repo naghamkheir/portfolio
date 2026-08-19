@@ -328,6 +328,10 @@ const server = http.createServer((req, res) => {
               return sendJson(res, 400, { error: "Content must be a JSON object" });
             }
             fs.writeFileSync(CONTENT_FILE, JSON.stringify(data, null, 2) + "\n");
+            /* Auto-rebuild static index.html so the live site reflects changes immediately */
+            try {
+              fs.writeFileSync("index.html", renderSite());
+            } catch (_) { /* non-fatal — content.json was still saved */ }
             return sendJson(res, 200, { ok: true });
           } catch (e) {
             return sendJson(res, 400, { error: "Invalid JSON: " + e.message });

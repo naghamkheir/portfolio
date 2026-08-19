@@ -6,25 +6,26 @@
 <title>Site Editor — Nagham Kheir</title>
 <style>
   :root {
-    --ink: #2f2f2f;
-    --ink-soft: #6b625d;
-    --bg: #f6f1ee;
+    --ink: #1a1a2e;
+    --ink-soft: #6b7280;
+    --bg: #f8f7f4;
     --card: #ffffff;
-    --line: #e7dfd9;
+    --line: #e5e7eb;
     --rose: #9f5970;
     --rose-deep: #7c4257;
     --pink: #ff94cb;
-    --pink-soft: #ffe3f1;
-    --blush: #f6e0dc;
-    --green: #2e9e6b;
-    --red: #c0392b;
-    --radius: 14px;
-    --shadow: 0 8px 24px rgba(124, 66, 87, 0.1);
-    --shadow-lg: 0 22px 50px rgba(124, 66, 87, 0.18);
+    --pink-soft: #fef0f7;
+    --blush: #fdf2f0;
+    --green: #059669;
+    --red: #dc2626;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 6px 16px rgba(124, 66, 87, 0.08);
+    --shadow-lg: 0 4px 24px rgba(0,0,0,0.08), 0 20px 48px rgba(124, 66, 87, 0.14);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
 
   button { font-family: inherit; cursor: pointer; }
   input[type=text], textarea, input[type=password] { font-family: inherit; }
@@ -33,130 +34,140 @@
   .login-wrap {
     min-height: 100vh; display: flex; align-items: center; justify-content: center;
     background:
-      radial-gradient(700px 420px at 12% 110%, rgba(255, 148, 203, 0.4), transparent 60%),
-      radial-gradient(700px 420px at 90% -10%, rgba(0, 196, 204, 0.22), transparent 60%),
-      linear-gradient(150deg, #7c4257, #9f5970 60%, #b46a84);
+      radial-gradient(800px 500px at 15% 110%, rgba(255, 148, 203, 0.35), transparent 60%),
+      radial-gradient(800px 500px at 88% -8%, rgba(0, 196, 204, 0.18), transparent 60%),
+      linear-gradient(155deg, #6b3a50, #8a4d63 55%, #a85e7a);
     padding: 20px;
   }
   .login-card {
-    background: #fff; border-radius: 20px; padding: 40px 42px; width: 360px;
+    background: #fff; border-radius: 24px; padding: 44px 40px; width: 380px;
     box-shadow: var(--shadow-lg); text-align: center;
+    animation: cardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .login-card .logo { font-size: 22px; font-weight: 800; letter-spacing: 0.02em; color: var(--rose); text-transform: uppercase; }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: none; } }
+  .login-card .logo { font-size: 20px; font-weight: 800; letter-spacing: 0.06em; color: var(--rose); text-transform: uppercase; }
   .login-card .logo span { color: var(--pink); }
-  .login-card h1 { font-size: 19px; margin: 14px 0 4px; }
-  .login-card p { font-size: 13px; color: var(--ink-soft); margin-bottom: 22px; }
+  .login-card h1 { font-size: 22px; margin: 16px 0 6px; font-weight: 700; color: var(--ink); }
+  .login-card p { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 24px; line-height: 1.5; }
   .login-card input {
-    width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 10px;
-    font-size: 14px; margin-bottom: 12px; outline: none; transition: border-color 0.2s ease;
+    width: 100%; padding: 13px 16px; border: 1.5px solid var(--line); border-radius: var(--radius-sm);
+    font-size: 14px; margin-bottom: 12px; outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: #fafafa;
   }
-  .login-card input:focus { border-color: var(--pink); }
+  .login-card input:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(255, 148, 203, 0.12); background: #fff; }
   .login-card button {
-    width: 100%; padding: 12px; border: 0; border-radius: 10px;
-    background: linear-gradient(90deg, var(--pink), var(--rose)); color: #fff;
-    font-weight: 700; font-size: 14px; letter-spacing: 0.02em;
+    width: 100%; padding: 13px; border: 0; border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, var(--pink), var(--rose)); color: #fff;
+    font-weight: 700; font-size: 14px; letter-spacing: 0.02em; margin-top: 4px;
     transition: transform 0.15s ease, box-shadow 0.2s ease;
   }
-  .login-card button:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(159, 89, 112, 0.35); }
-  .login-err { color: var(--red); font-size: 13px; margin-top: 10px; display: none; }
+  .login-card button:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(159, 89, 112, 0.35); }
+  .login-card button:active { transform: translateY(0); }
+  .login-err { color: var(--red); font-size: 13px; margin-top: 12px; display: none; background: #fef2f2; padding: 10px 14px; border-radius: var(--radius-sm); text-align: left; }
 
   /* ---------------- layout ---------------- */
   .app { display: flex; min-height: 100vh; }
 
   aside {
-    width: 244px; flex: 0 0 244px;
-    background: linear-gradient(180deg, #24201f, #1c1918);
+    width: 252px; flex: 0 0 252px;
+    background: linear-gradient(180deg, #1a1a2e, #16162b);
     color: #fff; display: flex; flex-direction: column;
     position: sticky; top: 0; height: 100vh;
   }
-  aside .brand { padding: 22px 22px 16px; font-size: 17px; font-weight: 800; letter-spacing: 0.02em; text-transform: uppercase; }
+  aside .brand { padding: 24px 22px 18px; font-size: 17px; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
   aside .brand span { color: var(--pink); }
-  aside .brand small { display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; color: rgba(255,255,255,0.45); text-transform: uppercase; margin-top: 3px; }
-  aside nav { flex: 1; overflow-y: auto; padding: 6px 10px; }
+  aside .brand small { display: block; font-size: 10.5px; font-weight: 500; letter-spacing: 0.14em; color: rgba(255,255,255,0.35); text-transform: uppercase; margin-top: 4px; }
+  aside nav { flex: 1; overflow-y: auto; padding: 4px 10px; }
   aside nav button {
     display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
-    background: none; border: 0; color: rgba(255,255,255,0.72);
-    font-size: 13.5px; padding: 9px 12px; border-radius: 9px; cursor: pointer;
+    background: none; border: 0; color: rgba(255,255,255,0.6);
+    font-size: 13px; font-weight: 500; padding: 10px 14px; border-radius: 10px; cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease;
   }
-  aside nav button::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.28); flex: 0 0 auto; }
-  aside nav button:hover { background: rgba(255,255,255,0.07); color: #fff; }
-  aside nav button.active { background: rgba(255,148,203,0.16); color: #fff; }
-  aside nav button.active::before { background: var(--pink); box-shadow: 0 0 0 3px rgba(255,148,203,0.25); }
-  aside .side-actions { padding: 14px 12px 18px; border-top: 1px solid rgba(255,255,255,0.09); display: grid; gap: 8px; }
+  aside nav button::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2); flex: 0 0 auto; transition: background 0.15s ease; }
+  aside nav button:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+  aside nav button.active { background: rgba(255,148,203,0.14); color: #fff; font-weight: 600; }
+  aside nav button.active::before { background: var(--pink); box-shadow: 0 0 0 3px rgba(255,148,203,0.2); }
+  aside .side-actions { padding: 14px 12px 18px; border-top: 1px solid rgba(255,255,255,0.07); display: grid; gap: 8px; }
   aside .side-actions a, aside .side-actions button {
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    font-size: 12.5px; font-weight: 600; padding: 10px; border-radius: 9px;
-    border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.85);
+    font-size: 12px; font-weight: 600; padding: 10px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.75);
     background: transparent; text-decoration: none; transition: background 0.15s ease;
   }
-  aside .side-actions a:hover, aside .side-actions button:hover { background: rgba(255,255,255,0.08); }
-  aside .side-actions .primary { background: var(--pink); border-color: var(--pink); color: var(--rose-deep); font-weight: 700; }
-  aside .side-actions .primary:hover { background: #ffa6d6; }
+  aside .side-actions a:hover, aside .side-actions button:hover { background: rgba(255,255,255,0.07); }
+  aside .side-actions .primary { background: rgba(255,148,203,0.18); border-color: rgba(255,148,203,0.3); color: var(--pink); font-weight: 700; }
+  aside .side-actions .primary:hover { background: rgba(255,148,203,0.26); }
 
   .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
   .topbar {
     position: sticky; top: 0; z-index: 20;
     display: flex; align-items: center; gap: 16px;
-    padding: 16px 30px;
-    background: rgba(255,255,255,0.86); backdrop-filter: blur(10px);
+    padding: 16px 32px;
+    background: rgba(255,255,255,0.82); backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
   }
-  .topbar .crumbs { font-size: 12px; color: var(--ink-soft); letter-spacing: 0.04em; text-transform: uppercase; font-weight: 600; }
+  .topbar .crumbs { font-size: 11px; color: var(--ink-soft); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
   .topbar h2 { font-size: 20px; font-weight: 700; }
   .topbar .spacer { flex: 1; }
   .dirty-chip {
     font-size: 12px; font-weight: 600; color: var(--rose);
-    background: var(--pink-soft); padding: 6px 12px; border-radius: 999px;
+    background: var(--pink-soft); padding: 6px 14px; border-radius: 999px;
     opacity: 0; transition: opacity 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
   }
   .dirty-chip.show { opacity: 1; }
-  .dirty-chip::before { content: "●"; font-size: 9px; }
+  .dirty-chip::before { content: "●"; font-size: 8px; }
   .btn-save {
     display: inline-flex; align-items: center; gap: 8px;
-    background: linear-gradient(90deg, var(--rose), var(--rose-deep));
-    color: #fff; border: 0; border-radius: 10px;
-    font-size: 13.5px; font-weight: 700; padding: 11px 22px;
-    box-shadow: 0 8px 20px rgba(159, 89, 112, 0.3);
+    background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+    color: #fff; border: 0; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 700; padding: 11px 22px;
+    box-shadow: 0 4px 14px rgba(159, 89, 112, 0.3);
     transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
   }
-  .btn-save:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(159, 89, 112, 0.4); }
+  .btn-save:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(159, 89, 112, 0.4); }
   .btn-save:disabled { opacity: 0.55; cursor: default; transform: none; }
-  .btn-save.ok { background: linear-gradient(90deg, var(--green), #1f7a50); }
-  .kbd { font-size: 11px; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.35); border-radius: 5px; padding: 2px 6px; }
+  .btn-save.ok { background: linear-gradient(135deg, var(--green), #047857); box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3); }
+  .kbd { font-size: 10.5px; color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.3); border-radius: 5px; padding: 2px 7px; }
   .icon-btn {
-    width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line);
+    width: 38px; height: 38px; border-radius: var(--radius-sm); border: 1px solid var(--line);
     background: #fff; color: var(--ink-soft); font-size: 16px;
     display: inline-flex; align-items: center; justify-content: center;
     transition: background 0.15s ease, color 0.15s ease;
   }
   .icon-btn:hover { background: var(--blush); color: var(--rose); }
 
-  .content { padding: 30px; max-width: 900px; width: 100%; }
+  .content { padding: 32px; max-width: 920px; width: 100%; }
 
-  .section-desc { font-size: 13.5px; color: var(--ink-soft); margin: -8px 0 22px; }
+  .section-desc { font-size: 13.5px; color: var(--ink-soft); margin: -8px 0 24px; }
 
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; margin-bottom: 18px; box-shadow: var(--shadow); }
-  .card h3 { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--rose); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px;
+    margin-bottom: 20px; box-shadow: var(--shadow);
+  }
+  .card h3 {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--rose); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+  }
   .card h3::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 
   .field { margin-bottom: 18px; }
   .field:last-child { margin-bottom: 0; }
-  .field label { display: block; font-size: 12.5px; font-weight: 600; color: var(--ink-soft); margin-bottom: 7px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; color: var(--ink-soft); margin-bottom: 7px; letter-spacing: 0.01em; }
   .field input[type=text], .field textarea {
-    width: 100%; padding: 11px 13px; font-size: 14px;
-    border: 1.5px solid var(--line); border-radius: 10px; background: #fff;
-    outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%; padding: 11px 14px; font-size: 14px;
+    border: 1.5px solid var(--line); border-radius: var(--radius-sm); background: #fafafa;
+    outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   }
-  .field input[type=text]:focus, .field textarea:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(255,148,203,0.15); }
+  .field input[type=text]:focus, .field textarea:focus { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(255,148,203,0.1); background: #fff; }
   .field textarea { min-height: 96px; resize: vertical; line-height: 1.55; }
-  .hint { font-size: 11.5px; color: #a49b95; margin-top: 5px; }
+  .hint { font-size: 11.5px; color: #9ca3af; margin-top: 5px; }
 
   .file-row { display: flex; align-items: center; gap: 12px; }
   .file-row input[type=text] { flex: 1; }
   .file-row .preview {
-    width: 54px; height: 54px; border-radius: 10px; object-fit: cover;
+    width: 54px; height: 54px; border-radius: var(--radius-sm); object-fit: cover;
     background: var(--blush); flex: 0 0 auto; border: 1px solid var(--line);
     visibility: hidden;
   }
@@ -169,40 +180,40 @@
   }
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    font-size: 12.5px; font-weight: 600; padding: 9px 15px; border-radius: 9px;
+    font-size: 12px; font-weight: 600; padding: 9px 16px; border-radius: var(--radius-sm);
     border: 1.5px solid var(--line); background: #fff; color: var(--ink);
-    transition: border-color 0.15s ease, background 0.15s ease;
+    transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
   }
   .btn:hover { border-color: var(--pink); background: var(--pink-soft); }
-  .btn.small { padding: 6px 11px; font-size: 12px; }
+  .btn.small { padding: 7px 12px; font-size: 11.5px; }
   .btn.ghost-danger { color: var(--red); border-color: var(--line); background: transparent; }
-  .btn.ghost-danger:hover { border-color: var(--red); background: #fdf0ee; }
+  .btn.ghost-danger:hover { border-color: var(--red); background: #fef2f2; }
 
-  .list-editor { border: 1.5px dashed var(--line); border-radius: 12px; padding: 18px; margin-bottom: 16px; background: rgba(246, 241, 238, 0.5); }
-  .list-editor > h4 { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 14px; }
-  .list-item { border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+  .list-editor { border: 1.5px dashed var(--line); border-radius: 14px; padding: 20px; margin-bottom: 16px; background: rgba(248, 247, 244, 0.6); }
+  .list-editor > h4 { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 14px; }
+  .list-item { border: 1px solid var(--line); background: #fff; border-radius: 12px; padding: 18px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
   .list-item:last-child { margin-bottom: 0; }
   .item-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
   .item-head .item-title { font-size: 13px; font-weight: 700; color: var(--rose); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .item-head .move { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--line); background: #fff; color: var(--ink-soft); font-size: 13px; line-height: 1; }
+  .item-head .move { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line); background: #fff; color: var(--ink-soft); font-size: 13px; line-height: 1; transition: border-color 0.15s ease, color 0.15s ease; }
   .item-head .move:hover:not(:disabled) { border-color: var(--pink); color: var(--rose); }
-  .item-head .move:disabled { opacity: 0.3; cursor: default; }
-  .item-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+  .item-head .move:disabled { opacity: 0.25; cursor: default; }
+  .item-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 18px; }
   .item-fields .full { grid-column: 1 / -1; }
   .add { margin-top: 14px; border-style: dashed; color: var(--rose); }
   .add:hover { border-color: var(--rose); background: var(--pink-soft); }
 
   .toast {
-    position: fixed; bottom: 26px; right: 26px; z-index: 100;
-    background: var(--ink); color: #fff; padding: 13px 22px; border-radius: 12px;
+    position: fixed; bottom: 28px; right: 28px; z-index: 100;
+    background: var(--ink); color: #fff; padding: 14px 24px; border-radius: 14px;
     font-size: 13.5px; display: flex; align-items: center; gap: 10px;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
     opacity: 0; transform: translateY(10px); transition: all 0.25s ease; pointer-events: none;
   }
   .toast.show { opacity: 1; transform: translateY(0); }
   .toast.ok { background: var(--green); }
   .toast.err { background: var(--red); }
-  .toast::before { content: "✓"; font-weight: 800; }
+  .toast::before { content: "✓"; font-weight: 800; font-size: 15px; }
   .toast.err::before { content: "!"; }
   .toast.info::before { content: ""; }
 
@@ -212,7 +223,7 @@
     .app { flex-direction: column; }
     aside { width: 100%; flex: none; height: auto; position: static; }
     aside nav { display: flex; flex-wrap: wrap; padding: 8px; }
-    aside nav button { width: auto; flex: 1 1 30%; justify-content: center; text-align: center; padding: 8px 6px; font-size: 12.5px; }
+    aside nav button { width: auto; flex: 1 1 30%; justify-content: center; text-align: center; padding: 8px 6px; font-size: 12px; }
     aside nav button::before { display: none; }
     aside .side-actions { flex-direction: row; }
     .topbar { padding: 12px 16px; flex-wrap: wrap; }
@@ -451,6 +462,87 @@ function toast(msg, kind) {
   t.className = "toast show " + (kind || "");
   clearTimeout(t._h);
   t._h = setTimeout(() => (t.className = "toast"), 2600);
+}
+
+/* ---------------- client-side template engine (for GitHub-mode export) ---------------- */
+
+function tplEsc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+function tplTokenize(tpl) {
+  const re = /{{([^}]+)}}/g;
+  const stack = [{ type: "root", children: [] }];
+  let last = 0, m;
+  while ((m = re.exec(tpl))) {
+    if (m.index > last) stack[stack.length - 1].children.push({ type: "text", text: tpl.slice(last, m.index) });
+    const tok = m[1].trim();
+    if (tok.startsWith("/")) {
+      const name = tok.slice(1).trim();
+      const top = stack[stack.length - 1];
+      const isIfClose = top.type === "block" && top.name.startsWith("if ") && name === "if";
+      if (top.type === "block" && (top.name === name || isIfClose)) stack.pop();
+      else throw new Error("Mismatched template close: " + name);
+    } else if (tok.startsWith("#") || tok.startsWith("^")) {
+      const node = { type: "block", kind: tok[0], name: tok.slice(1).trim(), children: [] };
+      stack[stack.length - 1].children.push(node);
+      stack.push(node);
+    } else {
+      stack[stack.length - 1].children.push({ type: "token", value: tok });
+    }
+    last = m.index + m[0].length;
+  }
+  if (last < tpl.length) stack[stack.length - 1].children.push({ type: "text", text: tpl.slice(last) });
+  return stack[0].children;
+}
+
+function tplResolve(pathStr, ctxStack) {
+  if (pathStr === "." || pathStr === "this") return ctxStack[ctxStack.length - 1];
+  const parts = pathStr.split(".").map((p) => p.trim());
+  for (let i = ctxStack.length - 1; i >= 0; i--) {
+    let cur = ctxStack[i], ok = true;
+    for (const p of parts) {
+      if (cur == null || !(p in Object(cur))) { ok = false; break; }
+      cur = cur[p];
+    }
+    if (ok) return cur;
+  }
+  return undefined;
+}
+
+function tplEvalNodes(nodes, ctxStack, out) {
+  for (const n of nodes) {
+    if (n.type === "text") { out.push(n.text); }
+    else if (n.type === "token") {
+      const [pathStr, flag] = n.value.split("|").map((s) => s.trim());
+      let v = tplResolve(pathStr, ctxStack);
+      if (v == null) v = "";
+      out.push(flag === "raw" ? String(v) : tplEsc(v));
+    } else if (n.type === "block") {
+      if (n.kind === "#") {
+        if (n.name.startsWith("if ")) {
+          const cond = tplResolve(n.name.slice(3).trim(), ctxStack);
+          if (cond) tplEvalNodes(n.children, ctxStack, out);
+          continue;
+        }
+        const v = tplResolve(n.name, ctxStack);
+        if (Array.isArray(v)) {
+          v.forEach((item, idx) => tplEvalNodes(n.children, ctxStack.concat([{ __index: idx, __first: idx === 0 }, item]), out));
+        } else if (v) { tplEvalNodes(n.children, ctxStack.concat([v]), out); }
+      } else if (n.kind === "^") {
+        const v = tplResolve(n.name, ctxStack);
+        const empty = v == null || v === "" || (Array.isArray(v) && v.length === 0);
+        if (empty) tplEvalNodes(n.children, ctxStack, out);
+      }
+    }
+  }
+}
+
+function tplRender(templateText, data) {
+  const nodes = tplTokenize(templateText);
+  const out = [];
+  tplEvalNodes(nodes, [data], out);
+  return out.join("");
 }
 
 /* ---------------- GitHub API config ---------------- */
@@ -1066,14 +1158,7 @@ function showEditor() {
   $("#appView").style.display = "flex";
 }
 
-/* Try local server first, fall back to login screen */
-async function detectMode() {
-  try {
-    const r = await fetch("/api/content", { signal: AbortSignal.timeout(2000) });
-    if (r.ok || r.status === 401) return "server";
-  } catch (_) {}
-  return "github";
-}
+/* (mode detection is handled inline in the startup IIFE below) */
 
 async function init() {
   try {
@@ -1104,6 +1189,7 @@ $("#loginBtn").addEventListener("click", async () => {
     await ghValidate();
   } catch (e) {
     gh.token = ""; gh.owner = ""; gh.repo = "";
+    $("#loginErr").textContent = "Invalid token or cannot reach GitHub. Check your credentials.";
     $("#loginErr").style.display = "block";
     return;
   }
@@ -1112,6 +1198,9 @@ $("#loginBtn").addEventListener("click", async () => {
   localStorage.setItem("gh_owner", owner);
   localStorage.setItem("gh_repo", repo);
   $("#loginErr").style.display = "none";
+  /* Update the view-site link */
+  const viewLink = $("#viewSite");
+  if (viewLink) viewLink.href = `https://${owner}.github.io/${repo}/`;
   await init();
 });
 $("#ghRepo").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#loginBtn").click(); });
@@ -1124,6 +1213,21 @@ async function save() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(content),
     });
+    /* In GitHub mode, also export the rendered index.html so the live site updates */
+    if (gh.token) {
+      try {
+        toast("Exporting index.html…", "info");
+        const { content: tplText, sha: tplSha } = await ghRead("index.template.html");
+        const rendered = tplRender(tplText, content);
+        let indexSha = null;
+        try { const r = await ghRead("index.html"); indexSha = r.sha; } catch (_) {}
+        await ghWrite("index.html", rendered, indexSha, "Auto-export index.html from content.json");
+      } catch (e) {
+        toast("Content saved but export failed: " + e.message, "err");
+        clearDirty();
+        return;
+      }
+    }
     clearDirty();
     toast("Saved — the site will update shortly", "ok");
   } catch (e) {
@@ -1146,57 +1250,88 @@ $("#logoutBtn").addEventListener("click", async () => {
   showLogin();
 });
 
-/* Auto-fill saved credentials */
+/* Auto-fill saved GitHub credentials */
 if (gh.token && gh.owner && gh.repo) {
   $("#ghToken").value = gh.token;
   $("#ghOwner").value = gh.owner;
   $("#ghRepo").value = gh.repo;
 }
 
-detectMode().then((mode) => {
+/* ---- mode detection & startup ---- */
+(async function startup() {
+  /* Detect whether a local server is running */
+  let mode = "github";
+  try {
+    const r = await fetch("/api/content", { signal: AbortSignal.timeout(2000) });
+    if (r.ok || r.status === 401) mode = "server";
+  } catch (_) {}
+
+  const card = $(".login-card");
+
   if (mode === "server") {
-    /* Local server available — use password login */
-    document.querySelector(".login-card h1").textContent = "Site editor";
-    document.querySelector(".login-card p").textContent = "Enter the admin password to edit the website.";
-    document.querySelector(".login-card form, .login-card")?.querySelectorAll("input").forEach((i) => i.style.display = "none");
-    /* Show password field, hide gh fields */
-    let pwField = $("#pw");
-    if (!pwField) {
-      pwField = document.createElement("input");
-      pwField.type = "password"; pwField.id = "pw"; pwField.placeholder = "Password"; pwField.autocomplete = "current-password";
-      $("#ghToken").parentNode.insertBefore(pwField, $("#ghToken"));
-    }
-    pwField.style.display = "";
+    /* ---- Server mode: password login ---- */
+    card.querySelector("h1").textContent = "Site editor";
+    card.querySelector("p").textContent = "Enter the admin password to edit the website.";
+    /* Hide all GitHub-specific inputs */
     $("#ghToken").style.display = "none";
     $("#ghOwner").style.display = "none";
     $("#ghRepo").style.display = "none";
-    /* Override login to use server password */
+    /* Hide the hint about GitHub tokens */
+    const hint = card.querySelector("p:last-of-type");
+    if (hint && hint.textContent.includes("GitHub")) hint.style.display = "none";
+    /* Create or show password field */
+    let pwField = $("#pw");
+    if (!pwField) {
+      pwField = document.createElement("input");
+      pwField.type = "password"; pwField.id = "pw";
+      pwField.placeholder = "Password"; pwField.autocomplete = "current-password";
+      $("#ghToken").parentNode.insertBefore(pwField, $("#ghToken"));
+    }
+    pwField.style.display = "";
+    pwField.focus();
+    /* Override login button for server password */
     $("#loginBtn").onclick = async () => {
+      const pw = pwField.value.trim();
+      if (!pw) {
+        $("#loginErr").textContent = "Please enter the password.";
+        $("#loginErr").style.display = "block";
+        return;
+      }
       try {
         await api("/api/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ password: pwField.value }),
+          body: JSON.stringify({ password: pw }),
         });
         pwField.value = "";
         $("#loginErr").style.display = "none";
         await init();
       } catch (e) {
+        $("#loginErr").textContent = "Wrong password. Try again.";
         $("#loginErr").style.display = "block";
       }
     };
     pwField.addEventListener("keydown", (e) => { if (e.key === "Enter") $("#loginBtn").click(); });
+    /* If the server session cookie is still valid, auto-login */
+    try {
+      await init();
+    } catch (_) { /* show login form */ }
   } else {
-    /* GitHub Pages mode — use PAT login */
+    /* ---- GitHub Pages mode: token login ---- */
     const viewLink = $("#viewSite");
-    if (viewLink) viewLink.href = `https://${gh.owner}.github.io/${gh.repo}/`;
+    if (viewLink && gh.owner && gh.repo) viewLink.href = `https://${gh.owner}.github.io/${gh.repo}/`;
+    /* Focus the first empty field */
+    if (!gh.token) $("#ghToken").focus();
+    else if (!gh.owner) $("#ghOwner").focus();
+    else if (!gh.repo) $("#ghRepo").focus();
+    /* Auto-login if all credentials are stored */
     if (gh.token && gh.owner && gh.repo) {
-      init();
+      await init();
     } else {
       showLogin();
     }
   }
-});
+})();
 </script>
 </body>
 </html>
