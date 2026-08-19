@@ -263,7 +263,21 @@
     "title": "Results",
     "em": "with data!",
     "items": [
-      {}
+      {
+        "screenshot": "assets/img/Screenshot_2026-08-17_at_2.50.41_PM.webp"
+      },
+      {
+        "screenshot": "assets/img/Screenshot_2026-08-17_at_2.50.48_PM.webp"
+      },
+      {
+        "screenshot": "assets/img/Screenshot_2026-08-17_at_2.51.05_PM.webp"
+      },
+      {
+        "screenshot": "assets/img/Screenshot_2026-08-17_at_2.51.48_PM.webp"
+      },
+      {
+        "screenshot": "assets/img/Screenshot_2026-08-17_at_2.52.03_PM.webp"
+      }
     ]
   },
   "footer": {
