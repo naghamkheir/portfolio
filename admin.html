@@ -578,6 +578,21 @@ async function ghRead(filePath) {
   return { content: text, sha: data.sha };
 }
 
+/* Read only the GitHub file identifier. This also works for binary and large files,
+   whose Contents API response does not include decodable text. */
+async function ghGetSha(filePath) {
+  const url = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/${filePath}?ref=${gh.branch}`;
+  const res = await fetch(url, { headers: ghHeaders() });
+  if (res.status === 404) return null;
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub file lookup failed (${res.status})`);
+  }
+  const data = await res.json();
+  if (!data.sha) throw new Error("GitHub did not return a file SHA");
+  return data.sha;
+}
+
 /* Write / update a file in the repo */
 async function ghWrite(filePath, text, sha, message) {
   const url = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/${filePath}`;
@@ -608,11 +623,7 @@ async function ghUploadFile(file, destPath) {
   const b64 = btoa(binary);
 
   /* Check if file already exists (to get its SHA for update) */
-  let existingSha = null;
-  try {
-    const check = await ghRead(destPath);
-    existingSha = check.sha;
-  } catch (_) { /* new file */ }
+  const existingSha = await ghGetSha(destPath);
 
   const url = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/${destPath}`;
   const body = {
@@ -1217,10 +1228,9 @@ async function save() {
     if (gh.token) {
       try {
         toast("Exporting index.html…", "info");
-        const { content: tplText, sha: tplSha } = await ghRead("index.template.html");
+        const { content: tplText } = await ghRead("index.template.html");
         const rendered = tplRender(tplText, content);
-        let indexSha = null;
-        try { const r = await ghRead("index.html"); indexSha = r.sha; } catch (_) {}
+        const indexSha = await ghGetSha("index.html");
         await ghWrite("index.html", rendered, indexSha, "Auto-export index.html from content.json");
       } catch (e) {
         toast("Content saved but export failed: " + e.message, "err");
@@ -1229,7 +1239,7 @@ async function save() {
       }
     }
     clearDirty();
-    toast("Saved — the site will update shortly", "ok");
+    toast(gh.token ? "Saved and published — GitHub Pages may take a minute to refresh." : "Saved — the site updates now.", "ok");
   } catch (e) {
     toast("Save failed: " + e.message, "err");
   }
