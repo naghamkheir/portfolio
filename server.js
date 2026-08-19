@@ -196,12 +196,18 @@ const MIME = {
   woff: "font/woff",
   woff2: "font/woff2",
   ttf: "font/ttf",
+  ogg: "audio/ogg",
+  mp3: "audio/mpeg",
+  wav: "audio/wav",
+  m4a: "audio/mp4",
+  aac: "audio/aac",
   ico: "image/x-icon",
   txt: "text/plain; charset=utf-8",
 };
 
 const IMAGE_EXT = new Set(["jpg", "jpeg", "png", "gif", "webp", "svg", "avif"]);
 const VIDEO_EXT = new Set(["mp4", "webm", "mov"]);
+const AUDIO_EXT = new Set(["ogg", "mp3", "wav", "m4a", "aac"]);
 const DOC_EXT = new Set(["pdf"]);
 
 function readBody(req, limitMb, cb) {
@@ -344,6 +350,7 @@ const server = http.createServer((req, res) => {
       let folder = null;
       if (IMAGE_EXT.has(ext)) folder = "assets/img";
       else if (VIDEO_EXT.has(ext)) folder = "assets/video";
+      else if (AUDIO_EXT.has(ext)) folder = "assets/audio";
       else if (DOC_EXT.has(ext)) folder = "assets/docs";
       if (!folder) return sendJson(res, 400, { error: "Unsupported file type: " + ext });
       const dest = path.join(process.cwd(), folder, name);

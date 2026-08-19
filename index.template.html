@@ -137,24 +137,38 @@
     <!-- ================= TESTIMONIALS ================= -->
     <section class="testimonials section" id="testimonials">
       <h2 class="section-title reveal">{{testimonials.title}} <em>{{testimonials.em}}</em></h2>
-      <div class="testi-card reveal reveal-zoom">
-        <div class="testi-media">
-          <figure class="testi-video"{{#if testimonials.featured.video.poster}} style="background-image:url('{{testimonials.featured.video.poster}}')"{{/if}}>
-            <video src="{{testimonials.featured.video.src}}" muted loop playsinline preload="none"></video>
-          </figure>
-          <span class="testi-avatar"{{#if testimonials.featured.avatar}} style="background-image:url('{{testimonials.featured.avatar}}')"{{/if}}></span>
-        </div>
-        <div class="testi-main">
-          <blockquote class="testi-quote">{{testimonials.featured.quote|raw}}</blockquote>
-          <div class="testi-stars">
-            <span class="stars" aria-label="Five stars">{{testimonials.featured.stars}}</span>
-            <span class="testi-badge">{{testimonials.featured.badge}}</span>
+      <div class="testimonials-grid">
+        {{#testimonials.items}}<div class="testi-card reveal reveal-zoom">
+          <div class="testi-media">
+            {{#if video.src}}<figure class="testi-video"{{#if video.poster}} style="background-image:url('{{video.poster}}')"{{/if}}>
+              <video src="{{video.src}}" muted loop playsinline preload="none"></video>
+            </figure>{{/if}}
+            {{#if avatar}}<span class="testi-avatar" style="background-image:url('{{avatar}}')"></span>{{/if}}
           </div>
-          <p class="testi-client">{{testimonials.featured.name}}</p>
-        </div>
+          <div class="testi-main">
+            {{#if quote}}<blockquote class="testi-quote">{{quote|raw}}</blockquote>{{/if}}
+            {{#if audio}}<div class="testi-audio"><button class="testi-audio-btn" data-audio="{{audio}}">▶ Listen to voice</button><audio src="{{audio}}" preload="none"></audio></div>{{/if}}
+            <div class="testi-stars">
+              {{#if stars}}<span class="stars" aria-label="Five stars">{{stars}}</span>{{/if}}
+              {{#if badge}}<span class="testi-badge">{{badge}}</span>{{/if}}
+            </div>
+            <p class="testi-client">{{name}}</p>
+          </div>
+        </div>{{/testimonials.items}}
       </div>
-      <div class="testi-others reveal">
-        {{#testimonials.others}}<div class="testi-person"><span class="testi-dot"></span><span>{{name}}</span></div>{{/testimonials.others}}
+    </section>
+
+    <!-- ================= RESULTS ================= -->
+    <section class="results section" id="results">
+      <h2 class="section-title reveal">{{results.title}} <em>{{results.em}}</em></h2>
+      <div class="results-grid">
+        {{#results.items}}<div class="result-card reveal">
+          {{#if screenshot}}<figure class="result-screenshot"><img src="{{screenshot}}" alt="{{label}}" loading="lazy" /></figure>{{/if}}
+          <div class="result-info">
+            {{#if title}}<h3 class="result-title">{{title}}</h3>{{/if}}
+            {{#if label}}<p class="result-label">{{label}}</p>{{/if}}
+          </div>
+        </div>{{/results.items}}
       </div>
     </section>
 

@@ -31,6 +31,10 @@
       {
         "label": "Testimonials",
         "href": "#testimonials"
+      },
+      {
+        "label": "Results",
+        "href": "#results"
       }
     ]
   },
@@ -207,23 +211,42 @@
   "testimonials": {
     "title": "Testimonials",
     "em": "with results!",
-    "featured": {
-      "name": "DANA HAWASLI",
-      "avatar": "assets/img/testimonial-avatar.webp",
-      "video": {
-        "src": "assets/video/855930c991a53799d430d2515cf73a5a.mp4",
-        "poster": "assets/img/fcb46486aede383b4085ac812995dfb9.jpg"
-      },
-      "quote": "&ldquo;Translation: wow, for real wow, you are so talented, it&rsquo;s crazy! Your talent is way better than who has a 1 million followers — <strong>no way, wow</strong>.&rdquo;",
-      "stars": "★★★★★",
-      "badge": "WITHOUT A SINGLE AD! · PURE ORGANIC"
-    },
-    "others": [
+    "items": [
       {
-        "name": "LEA ARZOUNI"
+        "name": "DANA HAWASLI",
+        "avatar": "assets/img/testimonial-avatar.webp",
+        "quote": "&ldquo;Translation: wow, for real wow, you are so talented, it&rsquo;s crazy! Your talent is way better than who has a 1 million followers — <strong>no way, wow</strong>.&rdquo;",
+        "audio": "",
+        "video": {
+          "src": "assets/video/855930c991a53799d430d2515cf73a5a.mp4",
+          "poster": "assets/img/fcb46486aede383b4085ac812995dfb9.jpg"
+        },
+        "stars": "★★★★★",
+        "badge": "WITHOUT A SINGLE AD! · PURE ORGANIC"
       },
       {
-        "name": "IBRAHIM SEBIALY"
+        "name": "LEA ARZOUNI",
+        "avatar": "",
+        "quote": "",
+        "audio": "",
+        "video": {
+          "src": "",
+          "poster": ""
+        },
+        "stars": "",
+        "badge": ""
+      },
+      {
+        "name": "IBRAHIM SEBIALY",
+        "avatar": "",
+        "quote": "",
+        "audio": "",
+        "video": {
+          "src": "",
+          "poster": ""
+        },
+        "stars": "",
+        "badge": ""
       }
     ]
   },
@@ -235,6 +258,11 @@
     "whatsapp": "https://wa.me/71292060",
     "instagram": "https://instagram.com/withnagham",
     "instagramDisplay": "@withnagham"
+  },
+  "results": {
+    "title": "Results",
+    "em": "with data!",
+    "items": []
   },
   "footer": {
     "name": "Nagham Kheir",

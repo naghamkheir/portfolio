@@ -217,13 +217,40 @@
     })
   );
 
-  /* testimonial video -> lightbox with sound */
-  const testiFigure = document.querySelector(".testi-video");
-  if (testiFigure) {
-    testiFigure.addEventListener("click", () => {
-      const v = testiFigure.querySelector("video");
+  /* testimonial videos -> lightbox with sound */
+  document.querySelectorAll(".testi-video").forEach((fig) => {
+    fig.addEventListener("click", () => {
+      const v = fig.querySelector("video");
       if (!v) return;
       openLightbox([{ type: "video", src: v.currentSrc || v.src }], 0);
     });
-  }
+  });
+
+  /* testimonial audio buttons */
+  document.querySelectorAll(".testi-audio-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const audio = btn.nextElementSibling;
+      if (!audio) return;
+      if (!audio.paused) {
+        audio.pause();
+        btn.classList.remove("playing");
+        btn.textContent = "\u25B6 Listen to voice";
+      } else {
+        /* stop any other playing testimonial audio */
+        document.querySelectorAll(".testi-audio-btn.playing").forEach((b) => {
+          const a = b.nextElementSibling;
+          if (a) a.pause();
+          b.classList.remove("playing");
+          b.textContent = "\u25B6 Listen to voice";
+        });
+        audio.play();
+        btn.classList.add("playing");
+        btn.textContent = "\u23F9 Pause";
+      }
+    });
+    audio.addEventListener("ended", () => {
+      btn.classList.remove("playing");
+      btn.textContent = "\u25B6 Listen to voice";
+    });
+  });
 })();

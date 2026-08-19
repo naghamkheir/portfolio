@@ -230,10 +230,13 @@
   <div class="login-card">
     <div class="logo">nagham<span>kheir</span></div>
     <h1>Site editor</h1>
-    <p>Enter the admin password to edit the website.</p>
-    <input type="password" id="pw" placeholder="Password" autocomplete="current-password" />
-    <button id="loginBtn">Log in</button>
-    <div class="login-err" id="loginErr">Wrong password. Try again.</div>
+    <p>Connect with your GitHub account to edit the website.</p>
+    <input type="password" id="ghToken" placeholder="GitHub Personal Access Token" autocomplete="off" />
+    <input type="text" id="ghOwner" placeholder="GitHub username or org" autocomplete="off" />
+    <input type="text" id="ghRepo" placeholder="Repository name" autocomplete="off" />
+    <button id="loginBtn">Connect &amp; Edit</button>
+    <div class="login-err" id="loginErr">Connection failed. Check your credentials and try again.</div>
+    <p style="margin-top:14px;font-size:11.5px;color:var(--ink-soft);line-height:1.5">You need a <a href="https://github.com/settings/tokens" target="_blank" style="color:var(--rose)">GitHub Personal Access Token</a> with <strong>repo</strong> scope.</p>
   </div>
 </div>
 
@@ -242,7 +245,7 @@
     <div class="brand">nagham<span>kheir</span><small>content editor</small></div>
     <nav id="sectionNav"></nav>
     <div class="side-actions">
-      <a class="primary" href="/" target="_blank">↗ View site</a>
+      <a class="primary" href="/" target="_blank" id="viewSite">↗ View site</a>
       <button id="logoutBtn">Log out</button>
     </div>
   </aside>
@@ -353,19 +356,19 @@ const SCHEMA = [
   ], lists: [
     { p: ["photography", "photos"], label: "Photos", list: "scalar", file: "image" },
   ]},
-  { id: "testimonials", label: "Testimonials", desc: "The featured client, quote and other names.", fields: [
+  { id: "testimonials", label: "Testimonials", desc: "Add client testimonials — each with name, written quote, photo, and optional voice or video attachment.", fields: [
     { p: ["testimonials", "title"], label: "Section title" },
     { p: ["testimonials", "em"], label: "Title accent word (outline)" },
-    { p: ["testimonials", "featured", "name"], label: "Featured client name" },
-    { p: ["testimonials", "featured", "avatar"], label: "Featured client photo", file: "image" },
-    { p: ["testimonials", "featured", "video", "src"], label: "Testimonial video", file: "video" },
-    { p: ["testimonials", "featured", "video", "poster"], label: "Video poster image", file: "image" },
-    { p: ["testimonials", "featured", "quote"], label: "Quote (HTML allowed)", area: true },
-    { p: ["testimonials", "featured", "stars"], label: "Stars" },
-    { p: ["testimonials", "featured", "badge"], label: "Badge line" },
   ], lists: [
-    { p: ["testimonials", "others"], label: "Other clients", itemFields: [
-      { p: ["name"], label: "Name" },
+    { p: ["testimonials", "items"], label: "Testimonials", itemFields: [
+      { p: ["name"], label: "Client name" },
+      { p: ["avatar"], label: "Client photo", file: "image" },
+      { p: ["quote"], label: "Written testimonial (HTML allowed)", area: true },
+      { p: ["audio"], label: "Voice / audio attachment", file: "audio" },
+      { p: ["video", "src"], label: "Video attachment", file: "video" },
+      { p: ["video", "poster"], label: "Video poster image", file: "image" },
+      { p: ["stars"], label: "Stars" },
+      { p: ["badge"], label: "Badge line" },
     ]},
   ]},
   { id: "contact", label: "Contact", desc: "The closing section and your contact links.", fields: [
@@ -376,6 +379,16 @@ const SCHEMA = [
     { p: ["contact", "whatsapp"], label: "WhatsApp link (wa.me/…)" },
     { p: ["contact", "instagram"], label: "Instagram link" },
     { p: ["contact", "instagramDisplay"], label: "Instagram text shown on buttons" },
+  ]},
+  { id: "results", label: "Results", desc: "Video results and view-count screenshots. Upload screenshots to the stats folder.", fields: [
+    { p: ["results", "title"], label: "Section title" },
+    { p: ["results", "em"], label: "Title accent word (outline)" },
+  ], lists: [
+    { p: ["results", "items"], label: "Result cards", itemFields: [
+      { p: ["title"], label: "Title (e.g. Video title or brand name)" },
+      { p: ["screenshot"], label: "Screenshot of views / stats", file: "image" },
+      { p: ["label"], label: "Stats label (e.g. 1.2M views)" },
+    ]},
   ]},
   { id: "footer", label: "Footer", desc: "The small line at the very bottom.", fields: [
     { p: ["footer", "name"], label: "Name" },
@@ -440,9 +453,121 @@ function toast(msg, kind) {
   t._h = setTimeout(() => (t.className = "toast"), 2600);
 }
 
-/* ---------------- api ---------------- */
+/* ---------------- GitHub API config ---------------- */
+
+const gh = {
+  token: localStorage.getItem("gh_token") || "",
+  owner: localStorage.getItem("gh_owner") || "",
+  repo: localStorage.getItem("gh_repo") || "",
+  branch: localStorage.getItem("gh_branch") || "main",
+  contentSha: null, // SHA of content.json (needed for updates)
+};
+
+function ghHeaders() {
+  return {
+    "Authorization": "Bearer " + gh.token,
+    "Accept": "application/vnd.github+json",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+}
+
+const CONTENT_FILE = "content.json";
+
+/* Read a file from the repo → returns { content, sha } */
+async function ghRead(filePath) {
+  const url = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/${filePath}?ref=${gh.branch}`;
+  const res = await fetch(url, { headers: ghHeaders() });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub read failed (${res.status})`);
+  }
+  const data = await res.json();
+  const text = decodeURIComponent(escape(atob(data.content)));
+  return { content: text, sha: data.sha };
+}
+
+/* Write / update a file in the repo */
+async function ghWrite(filePath, text, sha, message) {
+  const url = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/${filePath}`;
+  const body = {
+    message,
+    content: btoa(unescape(encodeURIComponent(text))),
+    branch: gh.branch,
+  };
+  if (sha) body.sha = sha;
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: { ...ghHeaders(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub write failed (${res.status})`);
+  }
+  return res.json();
+}
+
+/* Upload a binary file (image / video / audio) to the repo */
+async function ghUploadFile(file, destPath) {
+  const buf = await file.arrayBuffer();
+  const bytes = new Uint8Array(buf);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  const b64 = btoa(binary);
+
+  /* Check if file already exists (to get its SHA for update) */
+  let existingSha = null;
+  try {
+    const check = await ghRead(destPath);
+    existingSha = check.sha;
+  } catch (_) { /* new file */ }
+
+  const url = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/${destPath}`;
+  const body = {
+    message: `Upload ${file.name}`,
+    content: b64,
+    branch: gh.branch,
+  };
+  if (existingSha) body.sha = existingSha;
+  const res = await fetch(url, {
+    method: "PUT",
+    headers: { ...ghHeaders(), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub upload failed (${res.status})`);
+  }
+  return destPath;
+}
+
+/* Validate the token by calling /user */
+async function ghValidate() {
+  const res = await fetch("https://api.github.com/user", { headers: ghHeaders() });
+  if (!res.ok) throw new Error("Invalid token");
+  return res.json();
+}
+
+/* ---------------- api (unified) ---------------- */
 
 async function api(path, opts) {
+  if (gh.token) {
+    /* GitHub API mode */
+    if (path === "/api/content" && (!opts || opts.method === "GET")) {
+      const { content: text, sha } = await ghRead(CONTENT_FILE);
+      gh.contentSha = sha;
+      return JSON.parse(text);
+    }
+    if (path === "/api/content" && opts && opts.method === "PUT") {
+      const body = JSON.parse(opts.body);
+      const text = JSON.stringify(body, null, 2) + "\n";
+      const res = await ghWrite(CONTENT_FILE, text, gh.contentSha, "Update site content");
+      gh.contentSha = res.content && res.content.sha ? res.content.sha : gh.contentSha;
+      return { ok: true };
+    }
+    throw new Error("Unknown API path in GitHub mode: " + path);
+  }
+  /* Local server mode */
   const res = await fetch(path, opts);
   if (res.status === 401) { showLogin(); throw new Error("unauthorized"); }
   if (!res.ok) {
@@ -456,6 +581,23 @@ async function api(path, opts) {
 /* ---------------- file upload (XHR with progress) ---------------- */
 
 function uploadFile(file, onProgress, optimized) {
+  if (gh.token) {
+    /* GitHub API mode — binary upload to repo */
+    const name = file.name.replace(/[^A-Za-z0-9._-]/g, "_");
+    const ext = name.split(".").pop().toLowerCase();
+    let folder = null;
+    if (["jpg","jpeg","png","gif","webp","svg","avif"].includes(ext)) folder = "assets/img";
+    else if (["mp4","webm","mov"].includes(ext)) folder = "assets/video";
+    else if (["ogg","mp3","wav","m4a","aac"].includes(ext)) folder = "assets/audio";
+    else if (["pdf"].includes(ext)) folder = "assets/docs";
+    if (!folder) return Promise.reject(new Error("Unsupported file type"));
+    if (onProgress) onProgress(0.5);
+    return ghUploadFile(file, folder + "/" + name).then((p) => {
+      if (onProgress) onProgress(1);
+      return p;
+    });
+  }
+  /* Local server mode */
   return new Promise((resolve, reject) => {
     const name = file.name.replace(/[^A-Za-z0-9._-]/g, "_");
     const xhr = new XMLHttpRequest();
@@ -641,7 +783,7 @@ function makeUploader(pathArr, kind) {
   btn.textContent = "Upload";
   const file = document.createElement("input");
   file.type = "file";
-  file.accept = kind === "image" ? "image/*" : kind === "video" ? "video/mp4,video/webm,video/quicktime" : ".pdf,application/pdf";
+  file.accept = kind === "image" ? "image/*" : kind === "video" ? "video/mp4,video/webm,video/quicktime" : kind === "audio" ? "audio/*" : ".pdf,application/pdf";
   file.style.display = "none";
   const progress = document.createElement("span");
   progress.className = "bar";
@@ -924,6 +1066,15 @@ function showEditor() {
   $("#appView").style.display = "flex";
 }
 
+/* Try local server first, fall back to login screen */
+async function detectMode() {
+  try {
+    const r = await fetch("/api/content", { signal: AbortSignal.timeout(2000) });
+    if (r.ok || r.status === 401) return "server";
+  } catch (_) {}
+  return "github";
+}
+
 async function init() {
   try {
     content = await api("/api/content");
@@ -939,21 +1090,31 @@ async function init() {
 /* ---------------- events ---------------- */
 
 $("#loginBtn").addEventListener("click", async () => {
-  const pw = $("#pw").value;
-  try {
-    await api("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: pw }),
-    });
-    $("#pw").value = "";
-    $("#loginErr").style.display = "none";
-    await init();
-  } catch (e) {
+  const token = $("#ghToken").value.trim();
+  const owner = $("#ghOwner").value.trim();
+  const repo = $("#ghRepo").value.trim();
+  if (!token || !owner || !repo) {
+    $("#loginErr").textContent = "Please fill in all fields.";
     $("#loginErr").style.display = "block";
+    return;
   }
+  /* Validate token */
+  gh.token = token; gh.owner = owner; gh.repo = repo;
+  try {
+    await ghValidate();
+  } catch (e) {
+    gh.token = ""; gh.owner = ""; gh.repo = "";
+    $("#loginErr").style.display = "block";
+    return;
+  }
+  /* Persist for next visit */
+  localStorage.setItem("gh_token", token);
+  localStorage.setItem("gh_owner", owner);
+  localStorage.setItem("gh_repo", repo);
+  $("#loginErr").style.display = "none";
+  await init();
 });
-$("#pw").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#loginBtn").click(); });
+$("#ghRepo").addEventListener("keydown", (e) => { if (e.key === "Enter") $("#loginBtn").click(); });
 
 $("#saveBtn").addEventListener("click", save);
 async function save() {
@@ -964,7 +1125,7 @@ async function save() {
       body: JSON.stringify(content),
     });
     clearDirty();
-    toast("Saved — the live site is up to date", "ok");
+    toast("Saved — the site will update shortly", "ok");
   } catch (e) {
     toast("Save failed: " + e.message, "err");
   }
@@ -978,11 +1139,60 @@ document.addEventListener("keydown", (e) => {
 });
 
 $("#logoutBtn").addEventListener("click", async () => {
-  await api("/api/logout", { method: "POST" }).catch(() => {});
+  localStorage.removeItem("gh_token");
+  localStorage.removeItem("gh_owner");
+  localStorage.removeItem("gh_repo");
+  gh.token = ""; gh.owner = ""; gh.repo = "";
   showLogin();
 });
 
-init();
+/* Auto-fill saved credentials */
+if (gh.token && gh.owner && gh.repo) {
+  $("#ghToken").value = gh.token;
+  $("#ghOwner").value = gh.owner;
+  $("#ghRepo").value = gh.repo;
+}
+
+detectMode().then((mode) => {
+  if (mode === "server") {
+    /* Local server available — use password login */
+    document.querySelector(".login-card h1").textContent = "Site editor";
+    document.querySelector(".login-card p").textContent = "Enter the admin password to edit the website.";
+    document.querySelector(".login-card form, .login-card")?.querySelectorAll("input").forEach((i) => i.style.display = "none");
+    /* Show password field, hide gh fields */
+    let pwField = $("#pw");
+    if (!pwField) {
+      pwField = document.createElement("input");
+      pwField.type = "password"; pwField.id = "pw"; pwField.placeholder = "Password"; pwField.autocomplete = "current-password";
+      $("#ghToken").parentNode.insertBefore(pwField, $("#ghToken"));
+    }
+    pwField.style.display = "";
+    $("#ghToken").style.display = "none";
+    $("#ghOwner").style.display = "none";
+    $("#ghRepo").style.display = "none";
+    /* Override login to use server password */
+    $("#loginBtn").onclick = async () => {
+      try {
+        await api("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password: pwField.value }),
+        });
+        pwField.value = "";
+        $("#loginErr").style.display = "none";
+        await init();
+      } catch (e) {
+        $("#loginErr").style.display = "block";
+      }
+    };
+    pwField.addEventListener("keydown", (e) => { if (e.key === "Enter") $("#loginBtn").click(); });
+  } else {
+    /* GitHub Pages mode — use PAT login */
+    const viewLink = $("#viewSite");
+    if (viewLink) viewLink.href = `https://${gh.owner}.github.io/${gh.repo}/`;
+    if (gh.token && gh.owner && gh.repo) init();
+  }
+});
 </script>
 </body>
 </html>
